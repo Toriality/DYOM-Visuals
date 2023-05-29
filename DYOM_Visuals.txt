@@ -1,0 +1,816 @@
+{
+    DYOM Visuals
+    ------------
+    A DYOM Add-on to add custom shaders and special effects to DYOM missions and storylines
+    
+    Created by:
+        Toriality
+        Miran
+        
+    Special thanks to:
+        Dust Rathard
+    
+    Current version:
+        v1.0.0
+        
+    Date of release (current version):
+        <...>
+    
+    Date of release (first version):
+        <...>
+        
+    Date of development start:
+        March 23, 2023
+    
+    Useful links:
+        <...>    
+}
+
+{$CLEO .cs}
+{$USE ini}
+{$INCLUDE DYOM_Addon_Base.txt}
+{$I shaderApi}
+
+const
+    hShader = 10@
+    strShader = 11@v
+    forceAiming = 15@
+    forceWalking = 16@
+    forceFirstPersonCamera = 17@
+    forceCinematicCamera = 18@
+    fTime = 19@
+    fTest = 20@
+end
+
+var
+    hShader: shader
+    forceAiming: int
+    forceWalking: int
+    forceFirstPersonCamera: int
+    forceCinematicCamera: int
+    fTime: float
+    fTest: int
+end 
+
+0000: nop
+
+thread "DVISUALS"
+script_name "DVISUALS"
+
+// This is a modified DYOM_Base_Addons.txt, it replaces the wait 1000 to wait 0
+// because the shader.Load() function crashes if it gets called after game load
+:DYOM_INIT
+set_current_directory 0
+hShader = shader.Load("CLEO/dyom_shaders/_main.hlsl")
+strShader = "none"
+fTest = 0.0
+return                      
+     
+:DYOM_MISSION_STARTED
+return
+
+:DYOM_MISSION_ENDED
+RESET_EFFECTS()
+RESET_SHADERS()
+return
+
+:DYOM_OBJECTIVE_STARTED
+0006: timera = 0
+GET_VISUALS()
+return
+
+:DYOM_OBJECTIVE_ENDED
+return
+
+:DYOM_RUN
+if
+0ADC:   test_cheat "TRUECOLORS"
+then
+0ACE: show_formatted_text_box "Random shader generated and saved on CLEO/DYOM_Shaders/effect"
+RANDOM_SHADERS()
+
+end
+shader.Draw(hShader, "draw", SCREEN_BASE_X, SCREEN_BASE_Y, SCREEN_SIZE_X, SCREEN_SIZE_Y)
+return
+
+:DYOM_MISSION_RUN
+FORCE_AIMING()
+FORCE_WALKING()
+FORCE_FIRSTPERSONCAMERA()
+008F: fTime = integer TimerA to_float
+fTime /= 1000.0
+shader.SetFloat(hShader, "time", fTime)
+shader.Draw(hShader, "draw", SCREEN_BASE_X, SCREEN_BASE_Y, SCREEN_SIZE_X, SCREEN_SIZE_Y)
+return
+                                      
+:FORCE_AIMING
+if
+    forceAiming == 1
+then
+    cleo_call @FORCE_KEYPRESS 1 args 12     
+end
+return
+
+:FORCE_WALKING
+if
+    forceWalking == 1
+then
+    cleo_call @FORCE_KEYPRESS 1 args 42
+end
+return
+
+:FORCE_FIRSTPERSONCAMERA
+if
+    forceFirstPersonCamera == 1
+then
+    09AD: set_vehicle_camera_mode 0
+end
+return
+
+:GET_VISUALS
+READ_INI_FILE()
+// 0@v = file string
+// 4@v = shader string
+0085: 4@ = dyom_objective_index // (int)
+4@ += 1 // current objective      
+string_format 5@v = string_format "OBJECTIVE_%d" 4@
+4@v = 5@v
+set_current_directory 1
+APPLY_EFFECTS()
+APPLY_SHADER()
+return
+
+:APPLY_EFFECTS
+EFFECT_HUD()
+EFFECT_RADAR()
+EFFECT_SITEROCKET()
+EFFECT_SHAKE()
+EFFECT_FADEIN()
+EFFECT_FADEOUT()
+EFFECT_DARKNESS()
+EFFECT_DRUNKENESS()
+EFFECT_FORCEAIMING()
+EFFECT_FORCEWALKING()
+EFFECT_FORCEFIRSTPERSONCAMERA()
+EFFECT_FORCECINEMATICCAMERA()
+return
+
+:APPLY_SHADER
+SHADER_ZOOM()
+SHADER_DISTORT()
+SHADER_FLIP()
+SHADER_BARS()
+SHADER_GLITCH()
+SHADER_RAINDROPS()
+SHADER_BRIGHTNESS()
+SHADER_CONTRAST()
+SHADER_SATURATION()
+SHADER_TINT()
+SHADER_HUE()
+SHADER_LEVELS()
+SHADER_QUANTIZE()
+SHADER_INVERT()
+SHADER_ONECOLOR()
+SHADER_INTERLACES()
+return
+
+:EFFECT_FORCECINEMATICCAMERA
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "forceCinematicCamera"
+then
+    0006: forceCinematicCamera = 8@
+    093D: lock_camera_on_cinematic_view 8@
+end
+return
+
+:EFFECT_FORCEFIRSTPERSONCAMERA
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "forceFirstPersonCamera"
+then
+    0006: forceFirstPersonCamera = 8@
+end
+return
+
+:EFFECT_FORCEWALKING
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "forceWalking"
+then
+    0006: forceWalking = 8@
+    06AF: set_player $PLAYER_CHAR sprint_mode 8@ // 1 to disable 0 to enable sprint
+    8@ = 1 - 8@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+    0901: enable_player $PLAYER_CHAR jump_key 8@
+    082A: set_player $PLAYER_CHAR able_to_use_crouch_button 8@
+end
+return
+
+
+:EFFECT_FORCEAIMING
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "forceAiming"
+then
+    0006: forceAiming = 8@
+    8@ = 1 - 8@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+    0992: set_player $PLAYER_CHAR weapons_scrollable 8@
+end
+return
+
+:EFFECT_DRUNKENESS
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "drunkeness"
+then
+    052C: set_player $PLAYER_CHAR drunk_visuals 8@
+end
+return
+
+:EFFECT_DARKNESS
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "darkness"
+then
+    0924: enable_screen_darkness 8@ with_value -1
+end
+return
+
+:EFFECT_FADEOUT
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "fadeOut"
+then
+    016A: fade 0 time 8@
+end
+return
+
+:EFFECT_FADEIN
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "fadeIn"
+then
+    016A: fade 1 time 8@
+end
+return
+
+:EFFECT_SHAKE
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "shake"
+then
+    0003: shake_camera 8@
+end
+return
+
+:EFFECT_SITEROCKET
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "siteRocket"
+then
+    09A3: show_siterocket_on_bumper_camera 1
+end
+return
+
+:EFFECT_RADAR 
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "showRadar"
+then
+    0581: enable_radar 8@
+
+end
+return
+
+:EFFECT_HUD 
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "showHUD"
+then
+    0826: enable_hud 8@
+    09B9: show_entered_car_name 8@
+    09BA: show_entered_zone_name 8@
+end
+return
+
+:SHADER_BRIGHTNESS
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "brightnessFactor"
+then
+    shader.SetFloat(hShader, "brightnessFactor", 8@)
+end
+return
+
+:SHADER_CONTRAST
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "contrastFactor"
+then
+    shader.SetFloat(hShader, "contrastFactor", 8@)
+end
+return
+
+:SHADER_SATURATION
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "saturationFactor"
+then
+    shader.SetFloat(hShader, "saturationFactor", 8@)
+end
+return
+
+:SHADER_TINT
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "tintFactor"
+then
+    shader.SetFloat(hShader, "tintFactor", 8@)
+end
+return
+
+:SHADER_HUE
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "hueFactor"
+then
+    shader.SetFloat(hShader, "hueFactor", 8@)
+end
+return
+
+:SHADER_LEVELS
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMinRed"
+then
+    shader.SetFloat(hShader, "inputMinRed", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMaxRed"
+then
+    shader.SetFloat(hShader, "inputMaxRed", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMinRed"
+then
+    shader.SetFloat(hShader, "outputMinRed", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMaxRed"
+then
+    shader.SetFloat(hShader, "outputMaxRed", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMinGreen"
+then
+    shader.SetFloat(hShader, "inputMinGreen", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMaxGreen"
+then
+    shader.SetFloat(hShader, "inputMaxGreen", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMinGreen"
+then
+    shader.SetFloat(hShader, "outputMinGreen", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMaxGreen"
+then
+    shader.SetFloat(hShader, "outputMaxGreen", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMinBlue"
+then
+    shader.SetFloat(hShader, "inputMinBlue", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "inputMaxBlue"
+then
+    shader.SetFloat(hShader, "inputMaxBlue", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMinBlue"
+then
+    shader.SetFloat(hShader, "outputMinBlue", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "outputMaxBlue"
+then
+    shader.SetFloat(hShader, "outputMaxBlue", 8@)
+end
+return
+
+:SHADER_DISTORT
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "distortFactor"
+then
+    shader.SetFloat(hShader, "distortFactor", 8@)
+end
+return
+
+:SHADER_RAINDROPS
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "useRainDrops"
+then
+	shader.SetBool(hShader, "useRainDrops", 8@)
+end
+return
+
+:SHADER_FLIP
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "flipVertical"
+then
+	shader.SetBool(hShader, "flipVertical", 8@)
+end
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "flipHorizontal"
+then
+	shader.SetBool(hShader, "flipHorizontal", 8@)
+end
+return
+
+:SHADER_BARS
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "barWidth"
+then
+    shader.SetFloat(hShader, "barWidth", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "barHeight"
+then
+    shader.SetFloat(hShader, "barHeight", 8@)
+end
+return
+
+:SHADER_GLITCH
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "glitchVerticalFactor"
+then
+    shader.SetFloat(hShader, "glitchVerticalFactor", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "glitchHorizontalFactor"
+then
+    shader.SetFloat(hShader, "glitchHorizontalFactor", 8@)
+end
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "glitchFactor"
+then
+    shader.SetFloat(hShader, "glitchFactor", 8@)
+end
+return
+
+:SHADER_ZOOM
+if
+0AF2: 8@ = read_float_from_ini_file 0@v section 4@v key "zoomFactor"
+then
+    shader.SetFloat(hShader, "zoomFactor", 8@)
+end
+return
+
+:SHADER_QUANTIZE
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "quantizeSteps"
+then
+	shader.SetInt(hShader, "quantizeSteps", 8@)
+end
+return
+
+:SHADER_ONECOLOR
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "oneColorColor"
+then
+	shader.SetInt(hShader, "oneColorColor", 8@)
+end
+return
+
+:SHADER_INVERT
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "useInvert"
+then
+	shader.SetBool(hShader, "useInvert", 8@)
+end
+return
+
+:SHADER_INTERLACES
+if
+0AF0: 8@ = read_int_from_ini_file 0@v section 4@v key "interlaces"
+then
+	shader.SetInt(hShader, "interlaces", 8@)
+end
+return
+
+:RANDOM_SHADERS
+RESET_SHADERS()
+0208: 0@ = random_float_in_ranges 0.25 2.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "brightnessFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.25 2.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "contrastFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 2.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "saturationFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges -1.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "tintFactor", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "hueFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMinRed", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMaxRed", 0@)
+end
+0208: 0@ = random_float_in_ranges 0.0 1.0
+
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMinRed", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMaxRed", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMinGreen", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMaxGreen", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMinGreen", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMaxGreen", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMinBlue", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "inputMaxBlue", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMinBlue", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 1.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "outputMaxBlue", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 3.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "distortFactor", 0@) 
+end
+
+0209: 0@ = random_int_in_ranges 0 2
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetBool(hShader, "useRainDrops", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 0.3
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "barWidth", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 0.3
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "barHeight", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 0.5
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "glitchVerticalFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 0.5
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "glitchHorizontalFactor", 0@)
+end
+
+0208: 0@ = random_float_in_ranges 0.0 2.0
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "glitchFactor", 0@) 
+end
+
+0208: 0@ = random_float_in_ranges 1.0 1.1
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetFloat(hShader, "zoomFactor", 0@)
+end
+
+0209: 0@ = random_int_in_ranges 0 33
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetInt(hShader, "quantizeSteps", 0@)
+end 
+
+0209: 0@ = random_int_in_ranges 0 4
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetInt(hShader, "oneColorColor", 0@)
+end
+
+0209: 0@ = random_int_in_ranges 0 2
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetBool(hShader, "useInvert", 0@)
+end
+
+0209: 0@ = random_int_in_ranges 0 500
+0209: 1@ = random_int_in_ranges 0 2
+if
+0039: 1@ == 1
+then
+shader.SetInt(hShader, "interlaces", 0@)
+end
+
+:RESET_EFFECTS
+0006: forceCinematicCamera = 0
+093D: lock_camera_on_cinematic_view 0
+0006: forceFirstPersonCamera = 0
+0006: forceWalking = 0
+06AF: set_player $PLAYER_CHAR sprint_mode 0
+0901: enable_player $PLAYER_CHAR jump_key 1
+082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1
+0006: forceAiming = 0
+0992: set_player $PLAYER_CHAR weapons_scrollable 1
+052C: set_player $PLAYER_CHAR drunk_visuals 0
+0924: enable_screen_darkness 0 with_value -1
+016A: fade 1 time 0
+0003: shake_camera 0
+09A3: show_siterocket_on_bumper_camera 0
+0581: enable_radar 1
+0826: enable_hud 1
+09B9: show_entered_car_name 1
+09BA: show_entered_zone_name 1
+return
+
+:RESET_SHADERS
+shader.SetFloat(hShader, "brightnessFactor", 1.0)
+shader.SetFloat(hShader, "contrastFactor", 1.0)
+shader.SetFloat(hShader, "saturationFactor", 1.0)
+shader.SetFloat(hShader, "tintFactor", 0.0)
+shader.SetFloat(hShader, "hueFactor", 0.0)
+shader.SetFloat(hShader, "inputMinRed", 0.0)
+shader.SetFloat(hShader, "inputMaxRed", 1.0)
+shader.SetFloat(hShader, "outputMinRed", 0.0)
+shader.SetFloat(hShader, "outputMaxRed", 1.0)
+shader.SetFloat(hShader, "inputMinGreen", 0.0)
+shader.SetFloat(hShader, "inputMaxGreen", 1.0)
+shader.SetFloat(hShader, "outputMinGreen", 0.0)
+shader.SetFloat(hShader, "outputMaxGreen", 1.0)
+shader.SetFloat(hShader, "inputMinBlue", 0.0)
+shader.SetFloat(hShader, "inputMaxBlue", 1.0)
+shader.SetFloat(hShader, "outputMinBlue", 0.0)
+shader.SetFloat(hShader, "outputMaxBlue", 1.0)
+shader.SetFloat(hShader, "distortFactor", 0.0)
+shader.SetBool(hShader, "useRainDrops", 0)
+shader.SetBool(hShader, "flipVertical", 0)
+shader.SetBool(hShader, "flipHorizontal", 0)
+shader.SetFloat(hShader, "barWidth", 0.0)
+shader.SetFloat(hShader, "barHeight", 0.0)
+shader.SetFloat(hShader, "glitchVerticalFactor", 0.1)
+shader.SetFloat(hShader, "glitchHorizontalFactor", 0.1)
+shader.SetFloat(hShader, "glitchFactor", 0.0)
+shader.SetFloat(hShader, "zoomFactor", 1.0)
+shader.SetInt(hShader, "quantizeSteps", 0)
+shader.SetInt(hShader, "oneColorColor", 0)
+shader.SetBool(hShader, "useInvert", 0)
+shader.SetInt(hShader, "interlaces", 0)
+return
+
+
+:READ_INI_FILE
+    string_format 0@v = string_format "%s" v$9905 // copy current mission sound file path   
+    0AC7: 4@ = var 0@ offset // address of 2@  
+    
+    4@ += 9 // skip to filename start
+    write_memory 4@ size 1 value 0x00 virtual_protect 0 // put '\0'
+    
+    // create missions sound directory if not exists yet
+    if
+        8AE4: not does_directory_exist 2@v 
+    then
+        0AE5: create_directory 2@v
+    end 
+        
+    // set filename in the path
+    write_memory 4@ size 1 value 0x65 virtual_protect 0 // put 'e'
+    4@ += 1
+    write_memory 4@ size 1 value 0x66 virtual_protect 0 // put 'f'
+    4@ += 1
+    write_memory 4@ size 1 value 0x66 virtual_protect 0 // put 'f'
+    4@ += 1
+    write_memory 4@ size 1 value 0x65 virtual_protect 0 // put 'e'
+    4@ += 1
+    write_memory 4@ size 1 value 0x63 virtual_protect 0 // put 'c'
+    4@ += 1
+    write_memory 4@ size 1 value 0x74 virtual_protect 0 // put 't'
+    4@ += 1
+    write_memory 4@ size 1 value 0x00 virtual_protect 0 // put '\0'
+return   
+
+:FORCE_KEYPRESS
+0@ += 0xB734D0 // High Priority Controls
+0A8C: write_memory 0@ size 1 value 255 virtual_protect 0
+cleo_return 0                    
+
+
+
+
+
+

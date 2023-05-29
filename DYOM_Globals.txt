@@ -1,0 +1,494 @@
+// DYOM 8.1 global variable edfinitions
+// by Miran
+// ver 1.0
+
+{$INCLUDE Utils.txt}
+
+// do not execute any code from this file yet
+0000: NOP
+jump @DYOM_GLOBALS_END
+
+const // constants and global variables
+	
+// "static" data - reflects mission file contents
+
+    // general mission info
+    
+    // $15809 array of 50 int weapon models array 
+    
+    dyom_mission_published = $10915 // true if loaded mission is read only
+    
+    dyom_mission_name_ptr = $9878
+    dyom_mission_name_len_max = 50
+    
+    dyom_author_name_ptr = $9879
+    dyom_author_name_len_max = 50
+    
+    dyom_intro_texts_ptr = $9882 // buffer containing 3 x 100 characters
+    dyom_intro_text_len_max = 100
+    dyom_intro_text_count_max = 3
+    
+    dyom_sound_dir_ptr = $9887
+    dyom_sound_dir_len_max = 16
+    
+	dyom_objective_count = $10916 // int - objective count in current mission
+	dyom_objective_count_max = 100
+	
+	dyom_actor_count = $10928 // int - actor count in current mission
+	dyom_actor_count_max = 100
+	
+	dyom_car_count = $9941 // int - car count in current mission
+	dyom_car_count_max = 50
+	
+	dyom_pickup_count = $10929 // int - pickup count in current mission
+	dyom_pickup_count_max = 50
+	
+	dyom_object_count = $10930 // int - object count in current mission
+	dyom_object_count_max = 100	
+	
+	dyom_mission_timelimit = $11445
+    dyom_mission_day_time = $11446
+    dyom_mission_weather = $10925
+    dyom_mission_wanted_min = $10926
+    dyom_mission_wanted_max = $10927
+    
+    dyom_mission_flags = $10923
+    dyom_mission_flag_riot = 1
+    dyom_mission_flag_timed = 2
+
+    dyom_mission_player_pos_x = $11447
+    dyom_mission_player_pos_y = $11448
+    dyom_mission_player_pos_z = $11449
+    dyom_mission_player_dir = $11450
+    dyom_mission_player_interior = $11451
+    dyom_mission_player_skin = $11452
+    dyom_mission_player_weapon = $11453
+    dyom_mission_player_ammo = $11454
+    dyom_mission_player_health = $11455
+
+	
+    // objective propeties
+	dyom_objective_pos_x = $10395 // float array
+	dyom_objective_pos_y = $10497 // float array
+	dyom_objective_pos_z = $10598 // float array
+	dyom_objective_dir = $11456 // float array - direction: 0 north, 90 east, 180 south, 270 west
+	dyom_objective_interior = $11557 // int array - interiors world number
+	
+	dyom_objective_type = $10294 // int array
+    dyom_objective_type_car = 1
+    dyom_objective_type_checkpoint = 2
+    dyom_objective_type_pickup = 3
+    dyom_objective_type_unused = 4
+    dyom_objective_type_actor = 5
+    dyom_objective_type_cutscene = 6
+    dyom_objective_type_player_teleport = 7
+    dyom_objective_type_countdown = 8
+    dyom_objective_type_player_teleport_car = 9
+    dyom_objective_type_timeout = 10
+    dyom_objective_type_weather = 11
+    dyom_objective_type_daytime = 12
+    dyom_objective_type_pedbehaviour = 13
+    dyom_objective_type_wantedlevel = 14
+    dyom_objective_type_timelimit = 15
+    dyom_objective_type_start_timer = 16
+    dyom_objective_type_player_disarm = 17
+    dyom_objective_type_phone_call = 18
+    dyom_objective_type_object = 19
+    dyom_objective_type_money_add = 20
+    dyom_objective_type_money_sub = 21
+    dyom_objective_type_player_animation = 22
+    
+	// general purpose objective properties - access as int
+	dyom_objective_prop_1i = $10800 // int array
+	dyom_objective_prop_2i = $11658 // int array
+	dyom_objective_prop_3i = $11759 // int array
+	dyom_objective_prop_4i = $11860 // int array
+	dyom_objective_prop_5i = $11961 // int array
+	dyom_objective_prop_6i = $12062 // int array
+	dyom_objective_prop_7i = $12163 // int array
+	dyom_objective_prop_8i = $12264 // int array
+	dyom_objective_prop_9i = $12365 // int array
+	dyom_objective_prop_10i = $12466 // int array
+	
+	// general purpose objective properties - access as float
+	dyom_objective_prop_1f = $10800 // float array
+	dyom_objective_prop_2f = $11658 // float array
+	dyom_objective_prop_3f = $11759 // float array
+	dyom_objective_prop_4f = $11860 // float array
+	dyom_objective_prop_5f = $11961 // float array
+	dyom_objective_prop_6f = $12062 // float array
+	dyom_objective_prop_7f = $12163 // float array
+	dyom_objective_prop_8f = $12264 // float array
+	dyom_objective_prop_9f = $12365 // float array
+	dyom_objective_prop_10f = $12466 // float array
+	
+	dyom_objective_texts_ptr = $9883 // pointer to first objective text. ptr + (N * dyom_objective_text_len_max) to get N-th objective text
+	dyom_objective_text_len_max = 100
+	
+	// objective checkpoint type
+	dyom_objective_checkpoint_shape_campfire = 0
+	dyom_objective_checkpoint_shape_beacon_arrow = 1
+	dyom_objective_checkpoint_shape_beacon_finish = 2
+	dyom_objective_checkpoint_shape_beacon = 3
+	dyom_objective_checkpoint_shape_ring = 4
+	dyom_objective_checkpoint_shape_invisible = 5
+	dyom_objective_checkpoint_shape_entrance = 6
+
+    // actor properties
+    dyom_actor_skin = $12567 // int array - id
+    dyom_actor_gang = $12667 // int array - group id 
+    dyom_actor_pos_x = $12767 // float array 
+    dyom_actor_pos_y = $12867 // float array  
+    dyom_actor_pos_z = $12967 // float array  
+    dyom_actor_dir = $13067 // float array - direction: 0 north, 90 east, 180 south, 270 west
+    dyom_actor_interior = $13167 // int array - interiors world number
+    dyom_actor_weapon = $13267 // int array - weapon id
+    dyom_actor_ammo = $13367 // int array - bullet count
+    dyom_actor_flags = $13467 // int array - flags
+    dyom_actor_health = $13567 // int array - health points
+    dyom_actor_accuracy = $13667 // int array - shoting accuracy percent
+    dyom_actor_spawn = $13767 // int array - objective index
+    dyom_actor_despawn = $13867 // int array - objective index
+    dyom_actor_must_survive = $13967 // int array - 0 or 1
+    dyom_actor_animation = $14067 // int array - animation id
+    dyom_actor_animation_argument = $14167 // int array - route id / vehicle seat
+    
+    // car properties
+    dyom_car_id = $10244 // int array - vehicle id
+    dyom_car_color_1 = $14267 // int array - primary color index
+    dyom_car_color_2 = $14317 // int array - secondary color index
+    dyom_car_pos_x = $10042 // float array 
+    dyom_car_pos_y = $10092 // float array 
+    dyom_car_pos_z = $10142 // float array
+    dyom_car_dir = $14367 // float array - direction: 0 north, 90 east, 180 south, 270 west
+    dyom_car_interior = $14417 // int array - interiors world number
+    dyom_car_health = $14467 // int array - health points
+    dyom_car_flags = $14517 // int array - flags
+    dyom_car_spawn = $9942 // int array - objective index
+    dyom_car_despawn = $9992 // int array - objective index
+    dyom_car_must_survive = $14567 // int array - 0 or 1
+    
+    // pickup properties
+    dyom_pickup_id = $14617 // int array - object id
+    dyom_pickup_ammo = $14667 // int array - bullet count / money ammount
+    dyom_pickup_behaviour = $14717 // int array - see https://gtamods.com/wiki/0213#pickup_types 
+    dyom_pickup_pos_x = $14767 // float array
+    dyom_pickup_pos_y = $14817 // float array
+    dyom_pickup_pos_z = $14867 // float array
+    dyom_pickup_spawn = $14917 // int array - objective index
+    dyom_pickup_despawn = $14967 // int array - objective index
+    
+    // object properties
+    dyom_object_id = $10939 // int array - object id
+    dyom_object_pos_x = $11039 // float array 
+    dyom_object_pos_y = $11139 // float array 
+    dyom_object_pos_z = $11239 // float array 
+    dyom_object_rot_y = $15017 // float array - angle in degrees
+    dyom_object_rot_x = $15117 // float array - angle in degrees
+    dyom_object_rot_z = $15217 // float array - angle in degrees
+    dyom_object_interior = $15317 // int array - interior idx / behaviour / route
+    dyom_object_spawn = $15417 // int array - objective index
+    dyom_object_despawn = $15517 // int array - objective index
+    
+    // routes data
+    dyom_route_count_max = 400 // route nodes count 
+    dyom_route_next_id = $8277 // int array - next route point index. -1 for end, -2 for looped end
+    dyom_route_x = $8677 // int float - usually position, rotation for every 2nd node in animations, durration for displacement
+    dyom_route_y = $9077 // int float - usually position, rotation for every 2nd node in animations, trigger radius for displacement
+    dyom_route_z = $9477 // int float - usually position, rotation for every 2nd node in animations
+    
+    
+// dynamic data - used during mission play
+    dyom_objective_index = $9903 // int - current objective index
+	
+	dyom_objective_handle = $10699 // int array - entities spawned peer objective (actor for actor objective, car for car objective etc.)
+	dyom_actor_handle = $15907 // int array
+	dyom_car_handle = $10193 // int array
+	dyom_pickup_handle = $16045 // int array
+	dyom_object_handle = $11339 // int array
+	
+	dyom_cutscene_in_progress = $16156
+	dyom_cutscene_skipping = $16149
+	
+	
+// DYOM editor
+    dyom_mission_index = $10914 // loaded mission file number. 0 if not loaded or read only mission
+    dyom_editor_panel = $10908 // handle to displayed menu panel
+    
+    dyom_editor_actor = $16095
+    
+    // unknown objects. Used in past for route points display?
+    dyom_editor_object_count = $10917 // handle to displayed menu panel
+    dyom_editor_object_count_max = 25
+    dyom_editor_object_handle = $15770
+    
+    //dyom_editor_menu_visible = $10911
+end
+
+// define variable types
+var
+    dyom_mission_name_ptr : integer
+    dyom_author_name_ptr : integer   
+    dyom_intro_texts_ptr : integer
+    dyom_sound_dir_ptr : integer
+
+	dyom_objective_count : integer
+	dyom_actor_count : integer
+	dyom_car_count : integer
+	dyom_pickup_count : integer
+	dyom_object_count : integer
+	
+    dyom_mission_timelimit : integer
+    dyom_mission_day_time : integer
+    dyom_mission_weather : integer
+    dyom_mission_wanted_min : integer
+    dyom_mission_wanted_max : integer
+    dyom_mission_flags : integer
+    
+    dyom_mission_player_pos_x : integer
+    dyom_mission_player_pos_y : integer
+    dyom_mission_player_pos_z : integer
+    dyom_mission_player_dir : integer
+    dyom_mission_player_interior : integer
+    dyom_mission_player_skin : integer
+    dyom_mission_player_weapon : integer
+    dyom_mission_player_ammo : integer
+    dyom_mission_player_health : integer
+	
+	dyom_objective_pos_x : array 100 of float
+	dyom_objective_pos_y : array 100 of float
+	dyom_objective_pos_z : array 100 of float
+	dyom_objective_dir : array 100 of float
+	dyom_objective_interior : array 100 of integer
+	dyom_objective_type : array 100 of integer
+	
+	dyom_objective_prop_1i : array 100 of integer
+	dyom_objective_prop_2i : array 100 of integer
+	dyom_objective_prop_3i : array 100 of integer
+	dyom_objective_prop_4i : array 100 of integer
+	dyom_objective_prop_5i : array 100 of integer
+	dyom_objective_prop_6i : array 100 of integer
+	dyom_objective_prop_7i : array 100 of integer
+	dyom_objective_prop_8i : array 100 of integer
+	dyom_objective_prop_9i : array 100 of integer
+	dyom_objective_prop_10i : array 100 of integer
+	
+	dyom_objective_prop_1f : array 100 of float
+	dyom_objective_prop_2f : array 100 of float
+	dyom_objective_prop_3f : array 100 of float
+	dyom_objective_prop_4f : array 100 of float
+	dyom_objective_prop_5f : array 100 of float
+	dyom_objective_prop_6f : array 100 of float
+	dyom_objective_prop_7f : array 100 of float
+	dyom_objective_prop_8f : array 100 of float
+	dyom_objective_prop_9f : array 100 of float
+	dyom_objective_prop_10f : array 100 of float
+	
+	dyom_objective_texts_ptr : integer
+	
+    dyom_actor_skin : array 100 of integer
+    dyom_actor_gang : array 100 of integer
+    dyom_actor_pos_x : array 100 of float
+    dyom_actor_pos_y : array 100 of float
+    dyom_actor_pos_z : array 100 of float
+    dyom_actor_dir : array 100 of float
+    dyom_actor_interior : array 100 of integer
+    dyom_actor_weapon : array 100 of integer
+    dyom_actor_ammo : array 100 of integer
+    dyom_actor_flags : array 100 of integer
+    dyom_actor_health : array 100 of integer
+    dyom_actor_accuracy : array 100 of integer
+    dyom_actor_spawn : array 100 of integer
+    dyom_actor_despawn : array 100 of integer
+    dyom_actor_must_survive : array 100 of integer
+    dyom_actor_animation : array 100 of integer
+    dyom_actor_animation_argument : array 100 of integer
+	
+	dyom_car_id : array 50 of integer
+    dyom_car_color_1 : array 50 of integer
+    dyom_car_color_2 : array 50 of integer
+    dyom_car_pos_x : array 50 of float
+    dyom_car_pos_y : array 50 of float
+    dyom_car_pos_z : array 50 of float
+    dyom_car_dir : array 50 of float
+    dyom_car_interior : array 50 of integer
+    dyom_car_health : array 50 of integer
+    dyom_car_flags : array 50 of integer
+    dyom_car_spawn : array 50 of integer
+    dyom_car_despawn : array 50 of integer
+    dyom_car_must_survive : array 50 of integer
+	
+	dyom_pickup_id : array 50 of integer
+    dyom_pickup_ammo : array 50 of integer
+    dyom_pickup_behaviour : array 50 of integer
+    dyom_pickup_pos_x : array 50 of float
+    dyom_pickup_pos_y : array 50 of float
+    dyom_pickup_pos_z : array 50 of float
+    dyom_pickup_spawn : array 50 of integer
+    dyom_pickup_despawn : array 50 of integer
+	
+	dyom_object_id : array 100 of integer
+    dyom_object_pos_x : array 100 of float
+    dyom_object_pos_y : array 100 of float
+    dyom_object_pos_z : array 100 of float
+    dyom_object_rot_y : array 100 of float
+    dyom_object_rot_x : array 100 of float
+    dyom_object_rot_z : array 100 of float
+    dyom_object_interior : array 100 of integer
+    dyom_object_spawn : array 100 of integer
+    dyom_object_despawn : array 100 of integer
+    
+    dyom_route_next_id : array 400 of integer
+    dyom_route_x : array 400 of float
+    dyom_route_y : array 400 of float
+    dyom_route_z : array 400 of float
+    
+	dyom_objective_index : integer
+	
+	dyom_objective_handle : array 100 of integer
+	dyom_actor_handle : array 100 of integer
+	dyom_car_handle : array 50 of integer
+	dyom_pickup_handle : array 50 of integer
+	dyom_object_handle : array 100 of integer
+	
+	dyom_cutscene_in_progress : integer
+	dyom_cutscene_skipping : integer
+	
+	dyom_mission_index : integer
+    dyom_editor_panel : integer
+    dyom_editor_actor : integer
+    dyom_editor_object_count : integer
+    dyom_editor_object_handle : array 25 of integer
+end
+
+0000: NOP
+
+
+// allocate memory for mission texts storage 
+:DYOM_BUFFERS_ALLOCATE
+    allocate_memory dyom_mission_name_ptr = allocate_memory_size dyom_mission_name_len_max
+    allocate_memory dyom_author_name_ptr = allocate_memory_size dyom_author_name_len_max
+    
+    0@ = dyom_intro_text_len_max
+    0@ *= dyom_intro_text_count_max
+    allocate_memory dyom_intro_texts_ptr = allocate_memory_size 0@
+    
+    allocate_memory dyom_sound_dir_ptr = allocate_memory_size dyom_sound_dir_len_max
+
+    0@ = dyom_objective_text_len_max
+    0@ *= dyom_objective_count_max
+    allocate_memory dyom_objective_texts_ptr = allocate_memory_size 0@
+return
+
+
+// free memory allocated for mission texts storage 
+:DYOM_BUFFERS_FREE
+    if
+        dyom_mission_name_ptr > 0
+    then    
+        0AC9: free_allocated_memory dyom_mission_name_ptr
+        dyom_mission_name_ptr = 0
+    end
+    
+    if
+        dyom_author_name_ptr > 0
+    then    
+        0AC9: free_allocated_memory dyom_author_name_ptr
+        dyom_author_name_ptr = 0
+    end
+    
+    if
+        dyom_intro_texts_ptr > 0
+    then    
+        0AC9: free_allocated_memory dyom_intro_texts_ptr
+        dyom_intro_texts_ptr = 0
+    end
+    
+    if
+        dyom_sound_dir_ptr > 0
+    then    
+        0AC9: free_allocated_memory dyom_sound_dir_ptr
+        dyom_sound_dir_ptr = 0
+    end
+    
+    if
+        dyom_objective_texts_ptr > 0
+    then    
+        0AC9: free_allocated_memory dyom_objective_texts_ptr
+        dyom_objective_texts_ptr = 0
+    end                
+return
+
+const 
+	i0 = 0@
+	//f0 = 0@
+end
+
+var
+	i0 : int
+	//f0 : float
+end
+
+// clear mission data
+:DYOM_MISSION_CLEAR
+    //i0 = dyom_mission_name_ptr
+    //1@i = dyom_mission_name_len_max 
+    UTILS_ZERO_MEMORY()
+    
+    //i0 = dyom_author_name_ptr
+    //i1 = dyom_author_name_len_max 
+    //UTILS_ZERO_MEMORY()
+
+    /*//0@ = dyom_intro_text_len_max
+    //0@ *= dyom_intro_text_count_max
+    //allocate_memory dyom_intro_texts_ptr = allocate_memory_size 0@
+    i0 = dyom_author_name_ptr
+    i1 = dyom_intro_text_len_max * dyom_intro_text_count_max 
+    UTILS_ZERO_MEMORY()
+    
+    allocate_memory dyom_sound_dir_ptr = allocate_memory_size dyom_sound_dir_len_max
+
+    0@ = dyom_objective_text_len_max
+    0@ *= dyom_objective_count_max
+    allocate_memory dyom_objective_texts_ptr = allocate_memory_size 0@*/    
+return
+
+
+// check if is the DYOM current game script
+// return @0 - true or false
+:CHECK_FOR_DYOM
+    if CHECK_FOR_DYOM_81()
+    then
+        return 1 true
+    end
+    
+    if CHECK_FOR_DYOM_RED()
+    then
+        return 1 true
+    end
+            
+    //print_formatted_now "DYOM not detected. Memory markers 0x%x 0x%x" time 2000 $9877 $9888 // DEBUG  
+return 1 false
+
+
+:CHECK_FOR_DYOM_81
+    if and // DYOM 8.1 and other compatible
+        $9877 == 0xA49960
+        $9888 == 0xA5C2D2
+    then
+        return 1 true
+    end
+return 1 false
+
+
+:CHECK_FOR_DYOM_RED
+    if and // DYOM REd
+        $9877 == 0xA4995B
+        $9888 == 0xA5C2CD
+    then
+        return 1 true
+    end
+return 1 false
+
+
+:DYOM_GLOBALS_END

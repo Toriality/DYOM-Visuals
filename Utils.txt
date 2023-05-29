@@ -1,0 +1,137 @@
+// General purpose utilities
+// by Miran
+// ver 1.0
+
+{$USE CLEO}
+
+0000: NOP
+jump @UTILS_END // do not execute any code from this file yet
+
+
+// Check if string starts with given prefix (case sensitive)
+// arg 0@ - prefix text
+// arg 1@ - reserved (occupied by prefix text too)
+// arg 2@ - reserved (occupied by prefix text too)
+// arg 3@ - prefix length 0-12 characters
+// arg 4@ - pointer to string to search within  
+// return 0@ - true or false
+:TEXT_STARTS_WITH
+    0AC7: 5@ = var 0@ offset // address of @0
+
+    repeat    
+        read_memory 6@ = read_memory 5@ size 1 virtual_protect 0 // read char from searched prefix
+        read_memory 7@ = read_memory 4@ size 1 virtual_protect 0 // read char from text
+          
+        if 803B: 6@ <> 7@ // (int)
+        then
+            0@ = false
+            return // characters not equal
+        end
+        
+        if 6@ == 0 // null terminator character
+        then
+            0@ = true 
+            return // end of prefix
+        end
+        
+        if 7@ == 0 // null terminator character
+        then
+            0@ = false
+            return // end of text
+        end
+        
+        5@ += 1
+        4@ += 1
+        3@ -= 1
+    until 3@ == 0
+    
+    0@ = true // end of searched prefix
+return
+
+
+// return 0@ - true or false
+:IS_RADAR_VISIBLE
+    0@ = 0 
+    read_memory 0@ = read_memory 0x00BAA3FB size 1 virtual_protect 0
+    if
+        0@ == 0
+    then
+        0@ = true
+    else
+        0@ = false
+    end
+return
+
+
+// check is player entering/exiting interior
+// return 0@ - true or false
+:IS_INTERIOR_CHANGING
+    0@ = 0 
+    read_memory 0@ = read_memory 0x0096A7CC size 4 virtual_protect 0 // ENEX trigger handling state
+    if or
+        0@ == 1 // entering
+        0@ == 2 // entered
+        //0@ == 3 // standing in enex, but ignore util exit
+    then
+        0@ = true
+    else
+        0@ = false
+    end
+return
+
+
+// util for writing memory region with zeros
+// arg i0 - memory start address
+// arg i1 - size in bytes
+:UTILS_ZERO_MEMORY
+    /*while i1 > 0
+        write_memory i0 size 1 value 0 virtual_protect 0
+        i0 += 1
+        i1 -= 1
+    end*/
+return
+
+
+// util for writing array contents with zeros
+// arg i0 - memory start address
+// arg i1 - count of (4 byte sized) array elements
+:UTILS_ZERO_ARRAY
+    /*while i1 > 0
+        write_memory i0 size 4 value 0 virtual_protect 0
+        i0 += 4 // element size
+        i1 -= 1
+    end*/
+return
+
+
+// play sound at player's position
+// arg 0@ - sound id
+:PlAY_SOUND_AT_PLAYER
+    00A0: store_actor $PLAYER_ACTOR position_to 1@ 2@ 3@
+    PLAY_SOUND_AT()
+return
+
+// play sound at position
+// arg 0@ - sound id
+// arg 1@ - position x
+// arg 2@ - position y
+// arg 3@ - position z
+:PlAY_SOUND_AT
+    03D7: set_wav 2 location 1@ 2@ 3@
+    PLAY_SOUND()
+return
+
+// play sound
+// arg 0@ - sound id
+:PLAY_SOUND
+    040D: unload_wav  2
+     
+    03CF: load_wav 0@ as 2
+    while 83D0: not wav 2 loaded       
+        wait 0 ms       
+    end
+    
+    03D1: play_wav 2
+return
+
+:UTILS_END

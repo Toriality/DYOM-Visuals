@@ -1,0 +1,225 @@
+// DYOM Addon Base framework
+// by Miran
+// ver 1.0
+
+{$INCLUDE DYOM_Globals.txt}
+//{$USE CLEO}
+
+const
+    _OnMission = 100 // processed on mission state
+    _ObjectiveIndex = 101 // processed objective idx
+    _ObjectiveStartTime = 102 // timestamp of current objective start in ms
+end
+
+0000: NOP
+wait 0 ms // give other things time to start
+
+if
+    CHECK_FOR_DYOM() 
+then
+else
+    0A93: terminate_this_custom_script // not DYOM game mode
+end
+
+
+:DYOM_ADDON_MAIN
+// init variables
+0@ = _OnMission
+1@ = false
+VAR_SET()
+
+0@ = _ObjectiveIndex
+1@ = -1
+VAR_SET()
+
+DYOM_INIT()
+
+// run
+while true
+    wait 0 ms
+         
+    0@ = _OnMission
+    VAR_GET()
+    
+    if or
+        $ONMISSION == true
+        0@ == true // _OnMission
+    then
+        // on mission changed
+        if
+            003C: $ONMISSION == 0@ // _OnMission
+        then
+        else
+            0@ = _OnMission
+            008B: 1@ = $ONMISSION // int
+            VAR_SET()
+         
+            if
+               $ONMISSION == true
+            then
+                DYOM_MISSION_STARTED()
+            else
+                if 
+                    dyom_objective_index == dyom_objective_count
+                then
+                    0@ = true // mission passed
+                else
+                    0@ = false // mission failed
+                end
+            
+                DYOM_MISSION_ENDED()
+            end   
+        end
+        
+        0@ = _ObjectiveIndex
+        VAR_GET()
+        
+        if or
+            not 0@ == -1
+            dyom_objective_index == 0 // after mission start wait for objective zero, as there may be leftover index from previous mission run
+        then            
+            if
+                003B: 0@ == dyom_objective_index // (int) current DYOM objective index just changed
+            then 
+            else
+                if
+                    0@ > -1
+                then
+                    DYOM_OBJECTIVE_ENDED()
+                end
+                
+                0@ = _ObjectiveIndex
+                008B: 1@ = dyom_objective_index // int
+                VAR_SET()
+                
+                0@ = _ObjectiveStartTime
+                01BD: 1@ = current_time_in_ms
+                VAR_SET()
+                
+                008B: 0@ = dyom_objective_index // int
+                DYOM_OBJECTIVE_STARTED()
+            end
+            
+            if
+              $ONMISSION == true
+            then
+                0@ = dyom_objective_count
+                0@ -= 1 
+                if        
+                    dyom_objective_index <= 0@ // mission not passed yet 
+                then
+                    DYOM_MISSION_RUN()
+                end
+            else                
+                0@ = _ObjectiveIndex
+                1@ = -1 // not on mission
+                VAR_SET()
+            end
+        end
+    end
+    
+    DYOM_RUN()
+end
+0A93: terminate_this_custom_script
+       
+
+// Get time elapsed since current objective started. Does not relay on TimerA or TimerB
+// return 0@ - elapsed time in ms
+:CURR_OBJECTIVE_TIME
+    0@ = _ObjectiveStartTime
+    VAR_GET()
+    
+    01BD: 1@ = current_time_in_ms
+    0062: 1@ -= 0@ 
+    0085: 0@ = 1@
+return
+
+
+// Get pointer to specified objective text
+// arg 0@ - objective index (zero based)
+// return 0@ - memory address
+:OBJECTIVE_TEXT
+    0@ *= dyom_objective_text_len_max // objective idx * objective text max length
+    0058: 0@ += dyom_objective_texts_ptr // (int) add text buffer start address
+return
+
+
+// Get pointer current objective text
+// return 0@ - memory address
+:CURR_OBJECTIVE_TEXT
+    008B: 0@ = dyom_objective_index
+    0@ *= dyom_objective_text_len_max // objective idx * objective text max length
+    0058: 0@ += dyom_objective_texts_ptr // (int) add text buffer start address
+return
+
+
+// Check if current objective text starts with given prefix (case sensitive)
+// arg 0@ - prefix text
+// arg 1@ - reserved (occupied by prefix text too)
+// arg 2@ - reserved (occupied by prefix text too)
+// arg 3@ - prefix length 0-12 characters
+// return 0@ - true or false
+:CURR_OBJECTIVE_TEXT_STARTS_WITH
+    008B: 4@ = dyom_objective_index
+    4@ *= dyom_objective_text_len_max // objective idx * objective text max length
+    0058: 4@ += dyom_objective_texts_ptr // (int) add text buffer start address
+    TEXT_STARTS_WITH()
+return
+
+
+// Check if specified DYOM objective text starts with given prefix (case sensitive)
+// arg 0@ - prefix text
+// arg 1@ - reserved (occupied by prefix text too)
+// arg 2@ - reserved (occupied by prefix text too)
+// arg 3@ - prefix length 0-12 characters
+// arg 4@ - objective index (zero based)
+// return 0@ - true or false
+:OBJECTIVE_TEXT_STARTS_WITH
+    // calculate pointer to objective text
+    4@ *= dyom_objective_text_len_max // objective idx * objective text max length
+    0058: 4@ += dyom_objective_texts_ptr // (int) add text buffer start address
+    TEXT_STARTS_WITH()
+return
+
+
+// DYOM Addon custom variables support
+// alternative to using global variables, as they can interfere with DYOM itself or other DYOM Addons
+
+// read variable by index
+// arg 0@ - variable index 0 - 99 general purpose, 100+ reserved for Addon_Base
+// return 0@ - variable value
+:VAR_GET
+    0@ *= 4 // 4 bytes peer variable  
+    0AC6: 1@ = get_label_pointer @DYOM_ADDON_VARIABLES
+    005A: 0@ += 1@ // int 
+    read_memory 0@ = read_memory 0@ size 4 virtual_protect 0
+return 1 0@ 
+
+
+// store variable by index
+// arg 0@ - variable index 0 - 99 general purpose, 100+ reserved for Addon_Base
+// arg 1@ - value to set
+:VAR_SET  
+    0@ *= 4 // 4 bytes peer variable  
+    0AC6: 2@ = get_label_pointer @DYOM_ADDON_VARIABLES
+    005A: 0@ += 2@ // int  
+    write_memory 0@ size 4 value 1@ virtual_protect 0
+return
+
+
+:DYOM_ADDON_VARIABLES
+hex // 100 variables for user use 
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 10
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 20
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 30
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 40
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 50
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 60
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 70
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 80
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 90
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 100
+    
+    // internal DYOM Addon variables
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 // 110 
+end  
