@@ -106,7 +106,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="HUD">
   <tr>
     <th colspan="3">
-    <a href="#summary"><span style="float: right">Top</span></a>
     <center>
     HUD
     </center>
@@ -131,7 +130,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Radar">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Radar</center>
     </th>
   </tr>
@@ -154,7 +152,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="SiteRocket">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>SiteRocket</center>
     </th>
   </tr>
@@ -177,7 +174,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Shake">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Shake</center>
     </th>
   </tr>
@@ -200,7 +196,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="FadeIn">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>FadeIn</center>
     </th>
   </tr>
@@ -223,7 +218,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="FadeOut">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>FadeOut</center>
     </th>
   </tr>
@@ -246,7 +240,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Darkness">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Darkness</center>
     </th>
   </tr>
@@ -269,7 +262,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Drunkenness">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Drunkenness</center>
     </th>
   </tr>
@@ -292,7 +284,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="ForceAiming">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>ForceAiming</center>
     </th>
   </tr>
@@ -315,7 +306,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="ForceWalking">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>ForceWalking</center>
     </th>
   </tr>
@@ -338,7 +328,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="ForceFirstPersonCamera">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>ForceFirstPersonCamera</center>
     </th>
   </tr>
@@ -361,7 +350,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="ForceCinematicCamera">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>ForceCinematicCamera</center>
     </th>
   </tr>
@@ -390,7 +378,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Brightness">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Brightness </center>
     </th>
   </tr>
@@ -414,7 +401,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Contrast">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Contrast</center>
     </th>
   </tr>
@@ -439,7 +425,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Saturation">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Saturation</center>
     </th>
   </tr>
@@ -464,7 +449,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Tint">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Tint</center>
     </th>
   </tr>
@@ -489,7 +473,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Hue">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Hue</center>
     </th>
   </tr>
@@ -514,7 +497,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMinRed">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMinRed</center>
     </th>
   </tr>
@@ -539,7 +521,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMaxRed">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMaxRed</center>
     </th>
   </tr>
@@ -564,7 +545,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMinRed">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMinRed</center>
     </th>
   </tr>
@@ -589,7 +569,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMaxRed">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMaxRed</center>
     </th>
   </tr>
@@ -614,7 +593,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMinGreen">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMinGreen</center>
     </th>
   </tr>
@@ -639,7 +617,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMaxGreen">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMaxGreen</center>
     </th>
   </tr>
@@ -664,7 +641,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMinGreen">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMinGreen</center>
     </th>
   </tr>
@@ -689,7 +665,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMaxGreen">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMaxGreen</center>
     </th>
   </tr>
@@ -714,7 +689,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMinBlue">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMinBlue</center>
     </th>
   </tr>
@@ -739,7 +713,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="InputMaxBlue">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>InputMaxBlue</center>
     </th>
   </tr>
@@ -764,7 +737,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMinBlue">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMinBlue</center>
     </th>
   </tr>
@@ -789,7 +761,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OutputMaxBlue">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OutputMaxBlue</center>
     </th>
   </tr>
@@ -814,7 +785,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Distort">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Distort</center>
     </th>
   </tr>
@@ -839,7 +809,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="RainDrops">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>RainDrops</center>
     </th>
   </tr>
@@ -864,7 +833,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="FlipVertical">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>FlipVertical</center>
     </th>
   </tr>
@@ -889,7 +857,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="FlipHorizontal">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>FlipHorizontal</center>
     </th>
   </tr>
@@ -914,7 +881,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="BarWidth">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>BarWidth</center>
     </th>
   </tr>
@@ -939,7 +905,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="BarHeight">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>BarHeight</center>
     </th>
   </tr>
@@ -964,7 +929,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Glitch">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Glitch</center>
     </th>
   </tr>
@@ -989,7 +953,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="GlitchVertical">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>GlitchVertical</center>
     </th>
   </tr>
@@ -1014,7 +977,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="GlitchHorizontal">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>GlitchHorizontal</center>
     </th>
   </tr>
@@ -1039,7 +1001,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Zoom">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Zoom</center>
     </th>
   </tr>
@@ -1064,7 +1025,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Quantize">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Quantize</center>
     </th>
   </tr>
@@ -1089,7 +1049,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="OneColor">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>OneColor</center>
     </th>
   </tr>
@@ -1114,7 +1073,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Invert">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Invert</center>
     </th>
   </tr>
@@ -1139,7 +1097,6 @@ DYOM Visuals is a feature-packed addition to enhance your missions with innovati
 <thead id="Interlaces">
   <tr>
     <th colspan="3">
-    <a href="summary"><span style="float: right">Top</span></a>
     <center>Interlaces</center>
     </th>
   </tr>
