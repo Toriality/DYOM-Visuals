@@ -9,58 +9,24 @@ _Enhance your missions with special effects and shaders_
    1. [Visuals File](#visuals-file)
    2. [Nomenclatures](#nomenclatures)
    3. [List of Effects](#list-of-effects)
-      - [HUD](#HUD)
-      - [Radar](#Radar)
-      - [SiteRocket](#SiteRocket)
-      - [Shake](#Shake)
-      - [FadeIn](#FadeIn)
-      - [FadeOut](#FadeOut)
-      - [Darkness](#Darkness)
-      - [Drunkenness](#Drunkenness)
-      - [ForceAiming](#ForceAiming)
-      - [ForceWalking](#ForceWalking)
-      - [ForceFirstPersonCamera](#ForceFirstPersonCamera)
-      - [ForceCinematicCamera](#ForceCinematicCamera)
    4. [List of Shaders](#list-of-shaders)
-      - [Brightness](#Brightness)
-      - [Contrast](#Contrast)
-      - [Saturation](#Saturation)
-      - [Tint](#Tint)
-      - [Hue](#Hue)
-      - [InputMinRed](#InputMinRed)
-      - [InputMaxRed](#InputMaxRed)
-      - [OutputMinRed](#OutputMinRed)
-      - [OutputMaxRed](#OutputMaxRed)
-      - [InputMinGreen](#InputMinGreen)
-      - [InputMaxGreen](#InputMaxGreen)
-      - [OutputMinGreen](#OutputMinGreen)
-      - [OutputMaxGreen](#OutputMaxGreen)
-      - [InputMinBlue](#InputMinBlue)
-      - [InputMaxBlue](#InputMaxBlue)
-      - [OutputMinBlue](#OutputMinBlue)
-      - [OutputMaxBlue](#OutputMaxBlue)
-      - [Distort](#Distort)
-      - [RainDrops](#RainDrops)
-      - [FlipVertical](#FlipVertical)
-      - [FlipHorizontal](#FlipHorizontal)
-      - [BarWidth](#BarWidth)
-      - [BarHeight](#BarHeight)
-      - [Glitch](#Glitch)
-      - [GlitchVertical](#GlitchVertical)
-      - [GlitchHorizontal](#GlitchHorizontal)
-      - [Zoom](#Zoom)
-      - [Quantize](#Quantize)
-      - [OneColor](#OneColor)
-      - [Invert](#Invert)
-      - [Interlaces](#Interlaces)
+   5. [DYOM_Shaders Folder](#dyomshaders-folder)
+   6. [Keyboard Shortcuts](#keyboard-shortcuts)
 
 ## Installation
 
-...
+1. Go to the Releases page and download latest version of the addon
+2. Extract the contents of the .zip to your GTA San Andreas/CLEO folder
+3. That's all!
+
+A few notes to take
+
+- This mod only works with the latest version of DYOM, which currently is 8.1
+- This mod does not breaks compatibility of your missions. The end user doesn't need to have this mod in order to be able to play your missions
 
 ## Documentation
 
-### Visuals File
+### Visuals.ini File
 
 When you create a new mission in DYOM, an SD code is assigned to this mission. Navigate to `My Documents/GTA San Andreas User Files/SD` and create a folder with the name of the SD code for your mission.
 
@@ -87,1037 +53,397 @@ Radar=1
 
 It's that simple!
 
-### Nomenclatures
+### Visuals Categories
 
-DYOM Visuals is a feature-packed addition to enhance your missions with innovative special effects. It offers a wide range of visuals divided into three distinct categories: **Effects, Shaders, and Transitions**.
+All the visuals in the modification are divided into three distinct categories:
 
-- **Effects:** This category includes settings that leverage existing features in the original game to bring about changes in display and gameplay. You can enable/disable the Heads-Up Display (HUD), adjust the Field of View (FOV), and even enforce specific camera styles. These options give you greater control over the visual presentation and overall gameplay experience.
+- **Effects:** Features and visuals existing in the original game that can affect the screen and gameplay, such as activating the HUD, FOV, and forcing camera styles.
 
-- **Shaders:** Shaders are powerful visual graphics that overlay the original game screen with various elements such as colors, overlays, distortions, and more. They provide extensive customization possibilities, allowing you to create unique and immersive visual environments. With shaders like contrast adjustment, CCTV effect, and color adjustment, you can craft captivating visuals tailored to your mission's specific needs.
+- **Shaders:** Special visual FX developed with HLSL (DirectX) that modify the game screen by changing colors, adding overlays, transitions, and more.
 
-- **Transitions:** This category comprises shaders designed to smoothly transition from one point to another, with customizable durations. These transitions can elevate the cinematic feel of your missions by adding visually appealing effects. For example, you can seamlessly shift from color to grayscale or vice versa, enhancing the atmosphere and storytelling elements within your missions.
-
-- **Visuals:** Englobe all the above categories
+- **Transitions:** These are shaders that move from point A to point B in a determined duration.
 
 ### List of Effects
 
 <table>
-
-<thead id="HUD">
-  <tr>
-    <th colspan="3">
-    <center>
-    HUD
-    </center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td colspan="2">Enables/disables all the HUD elements, except the radar</td>
-  </tr>
-</tbody>
-
-<thead id="Radar">
-  <tr>
-    <th colspan="3">
-    <center>Radar</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1</td>
-  </tr>
-  <tr>
-    <td colspan="2">Enables/disables radar</td>
-  </tr>
-</tbody>
-
-<thead id="SiteRocket">
-  <tr>
-    <th colspan="3">
-    <center>SiteRocket</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Enables/disables rocket launcher crosshair in first person view on vehicles. Used in Ryder's Catalyst mission.</td>
-  </tr>
-</tbody>
-
-<thead id="Shake">
-  <tr>
-    <th colspan="3">
-    <center>Shake</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Shakes the game camera with given intensity.</td>
-  </tr>
-</tbody>
-
-<thead id="FadeIn">
-  <tr>
-    <th colspan="3">
-    <center>FadeIn</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Fade in for X milliseconds.</td>
-  </tr>
-</tbody>
-
-<thead id="FadeOut">
-  <tr>
-    <th colspan="3">
-    <center>FadeOut</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Fade out for X milliseconds</td>
-  </tr>
-</tbody>
-
-<thead id="Darkness">
-  <tr>
-    <th colspan="3">
-    <center>Darkness</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Applies the darkness effect used in the End Of The Line mission.</td>
-  </tr>
-</tbody>
-
-<thead id="Drunkenness">
-  <tr>
-    <th colspan="3">
-    <center>Drunkenness</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Swings the camera simulating a drunkenness effect with a given intensity.</td>
-  </tr>
-</tbody>
-
-<thead id="ForceAiming">
-  <tr>
-    <th colspan="3">
-    <center>ForceAiming</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Forces the right mouse button to be pressed, and disables the player's ability to change weapons.</td>
-  </tr>
-</tbody>
-
-<thead id="ForceWalking">
-  <tr>
-    <th colspan="3">
-    <center>ForceWalking</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Forces the left ALT keyboard button to be pressed. Disables the player's ability to jump, run and crouch.</td>
-  </tr>
-</tbody>
-
-<thead id="ForceFirstPersonCamera">
-  <tr>
-    <th colspan="3">
-    <center>ForceFirstPersonCamera</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Forces the first person camera on vehicles.</td>
-  </tr>
-</tbody>
-
-<thead id="ForceCinematicCamera">
-  <tr>
-    <th colspan="3">
-    <center>ForceCinematicCamera</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Force cinematic camera on vehicles.</td>
-  </tr>
-</tbody>
-
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Values</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HUD</td>
+      <td>0 or 1</td>
+      <td>1</td>
+      <td>Enables/disables all the HUD elements, except the radar</td>
+    </tr>
+    <tr>
+      <td>Radar</td>
+      <td>0 or 1</td>
+      <td>1</td>
+      <td>Enables/disables radar</td>
+    </tr>
+    <tr>
+      <td>SiteRocket</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Enables/disables rocket launcher crosshair in first person view on vehicles. Used in Ryder's Catalyst mission.</td>
+    </tr>
+    <tr>
+      <td>Shake</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Shakes the game camera with given intensity.</td>
+    </tr>
+    <tr>
+      <td>FadeIn</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Fade in for X milliseconds.</td>
+    </tr>
+    <tr>
+      <td>FadeOut</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Fade out for X milliseconds</td>
+    </tr>
+    <tr>
+      <td>Darkness</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Applies the darkness effect used in the End Of The Line mission.</td>
+    </tr>
+    <tr>
+      <td>Drunkenness</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Swings the camera simulating a drunkenness effect with a given intensity.</td>
+    </tr>
+    <tr>
+      <td>ForceAiming</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Forces the right mouse button to be pressed, and disables the player's ability to change weapons.</td>
+    </tr>
+    <tr>
+      <td>ForceWalking</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Forces the left ALT keyboard button to be pressed. Disables the player's ability to jump, run and crouch.</td>
+    </tr>
+    <tr>
+      <td>ForceBumper</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Forces the first person camera on vehicles.</td>
+    </tr>
+    <tr>
+      <td>ForceCinematic</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Force cinematic camera on vehicles.</td>
+    </tr>
+  </tbody>
 </table>
 
 ### List of Shaders
 
 <table>
-
-<thead id="Brightness">
-  <tr>
-    <th colspan="3">
-    <center>Brightness </center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">Adjusts the brightness of the screen
-</td>
-  </tr>
-</tbody>
-
-<thead id="Contrast">
-  <tr>
-    <th colspan="3">
-    <center>Contrast</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Adjusts the contrast of the screen
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Saturation">
-  <tr>
-    <th colspan="3">
-    <center>Saturation</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Adjusts the saturation of the screen
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Tint">
-  <tr>
-    <th colspan="3">
-    <center>Tint</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Adjusts the color temperature
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Hue">
-  <tr>
-    <th colspan="3">
-    <center>Hue</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Adjusts the color palette
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMinRed">
-  <tr>
-    <th colspan="3">
-    <center>InputMinRed</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the red channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMaxRed">
-  <tr>
-    <th colspan="3">
-    <center>InputMaxRed</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the red channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMinRed">
-  <tr>
-    <th colspan="3">
-    <center>OutputMinRed</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the red channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMaxRed">
-  <tr>
-    <th colspan="3">
-    <center>OutputMaxRed</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the red channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMinGreen">
-  <tr>
-    <th colspan="3">
-    <center>InputMinGreen</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the green channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMaxGreen">
-  <tr>
-    <th colspan="3">
-    <center>InputMaxGreen</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the green channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMinGreen">
-  <tr>
-    <th colspan="3">
-    <center>OutputMinGreen</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the green channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMaxGreen">
-  <tr>
-    <th colspan="3">
-    <center>OutputMaxGreen</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the green channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMinBlue">
-  <tr>
-    <th colspan="3">
-    <center>InputMinBlue</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the green channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="InputMaxBlue">
-  <tr>
-    <th colspan="3">
-    <center>InputMaxBlue</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the green channel of the screen input
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMinBlue">
-  <tr>
-    <th colspan="3">
-    <center>OutputMinBlue</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change minimum value for the green channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OutputMaxBlue">
-  <tr>
-    <th colspan="3">
-    <center>OutputMaxBlue</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Change maximum value for the green channel of the screen output
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Distort">
-  <tr>
-    <th colspan="3">
-    <center>Distort</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Applies a TV-like distortion to the screen
-    </td>
-  </tr>
-</tbody>
-
-<thead id="RainDrops">
-  <tr>
-    <th colspan="3">
-    <center>RainDrops</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Applies raindrops overlay on the screen
-    </td>
-  </tr>
-</tbody>
-
-<thead id="FlipVertical">
-  <tr>
-    <th colspan="3">
-    <center>FlipVertical</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Flips the screen vertically
-    </td>
-  </tr>
-</tbody>
-
-<thead id="FlipHorizontal">
-  <tr>
-    <th colspan="3">
-    <center>FlipHorizontal</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Flips the screen horizontally
-    </td>
-  </tr>
-</tbody>
-
-<thead id="BarWidth">
-  <tr>
-    <th colspan="3">
-    <center>BarWidth</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Draws black bars on each side of the screen with given width dimension
-    </td>
-  </tr>
-</tbody>
-
-<thead id="BarHeight">
-  <tr>
-    <th colspan="3">
-    <center>BarHeight</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Draws black bars on the top and bottom of the screen with given height dimension
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Glitch">
-  <tr>
-    <th colspan="3">
-    <center>Glitch</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Applies a glitch effect on the screen with given intensity
-    </td>
-  </tr>
-</tbody>
-
-<thead id="GlitchVertical">
-  <tr>
-    <th colspan="3">
-    <center>GlitchVertical</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.1</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Changes the vertical offset of the Glitch effect
-    </td>
-  </tr>
-</tbody>
-
-<thead id="GlitchHorizontal">
-  <tr>
-    <th colspan="3">
-    <center>GlitchHorizontal</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0.1</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Changes the horizontal offset of the Glitch effect
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Zoom">
-  <tr>
-    <th colspan="3">
-    <center>Zoom</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any float</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>1.0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Applies a zoom in or zoom out with given value. Negative values will flip the screen vertically
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Quantize">
-  <tr>
-    <th colspan="3">
-    <center>Quantize</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Balances level of detail in the screen, creating a retro appearance for low values, such as 8-bits colors. Use 0 to disable it
-    </td>
-  </tr>
-</tbody>
-
-<thead id="OneColor">
-  <tr>
-    <th colspan="3">
-    <center>OneColor</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0, 1, 2 or 3</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Artistically disables all the colors except one. Use 1 for keep red color, 2 for green color, 3 for blue color, 0 to disable
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Invert">
-  <tr>
-    <th colspan="3">
-    <center>Invert</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>0 or 1</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Invert colors of the screen
-    </td>
-  </tr>
-</tbody>
-
-<thead id="Interlaces">
-  <tr>
-    <th colspan="3">
-    <center>Interlaces</center>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td rowspan="3"><img width="300" height="300"></td>
-    <td>Values</td>
-    <td>Any integer</td>
-  </tr>
-  <tr>
-    <td>Default</td>
-    <td>0</td>
-  </tr>
-  <tr>
-    <td colspan="2">
-    Applies the given number of black animated bars on the screen, for TV and camera effects
-    </td>
-  </tr>
-</tbody>
-
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Values</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Brightness</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Adjusts the brightness of the screen</td>
+    </tr>
+    <tr>
+      <td>Contrast</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Adjusts the contrast of the screen</td>
+    </tr>
+    <tr>
+      <td>Saturation</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Adjusts the saturation of the screen</td>
+    </tr>
+    <tr>
+      <td>Tint</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Adjusts the color temperature</td>
+    </tr>
+    <tr>
+      <td>Hue</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Adjusts the color palette</td>
+    </tr>
+    <tr>
+      <td>InputMinRed</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the red channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>InputMaxRed</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the red channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>OutputMinRed</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the red channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>OutputMaxRed</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the red channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>InputMinGreen</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the green channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>InputMaxGreen</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the green channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>OutputMinGreen</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the green channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>OutputMaxGreen</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the green channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>InputMinBlue</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the blue channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>InputMaxBlue</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the blue channel of the screen input</td>
+    </tr>
+    <tr>
+      <td>OutputMinBlue</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Change minimum value for the blue channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>OutputMaxBlue</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Change maximum value for the blue channel of the screen output</td>
+    </tr>
+    <tr>
+      <td>Distort</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Applies a TV-like distortion to the screen</td>
+    </tr>
+    <tr>
+      <td>RainDrops</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Applies raindrops overlay on the screen</td>
+    </tr>
+    <tr>
+      <td>FlipY</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Flips the screen vertically</td>
+    </tr>
+    <tr>
+      <td>FlipX</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Flips the screen horizontally</td>
+    </tr>
+    <tr>
+      <td>BarWidth</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Draws black bars on each side of the screen with given width dimension</td>
+    </tr>
+    <tr>
+      <td>BarHeight</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Draws black bars on the top and bottom of the screen with given height dimension</td>
+    </tr>
+    <tr>
+      <td>Glitch</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Applies a glitch effect on the screen with given intensity</td>
+    </tr>
+    <tr>
+      <td>GlitchY</td>
+      <td>Any float</td>
+      <td>0.1</td>
+      <td>Changes the vertical offset of the Glitch effect</td>
+    </tr>
+    <tr>
+      <td>GlitchX</td>
+      <td>Any float</td>
+      <td>0.1</td>
+      <td>Changes the horizontal offset of the Glitch effect</td>
+    </tr>
+    <tr>
+      <td>Zoom</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Applies a zoom in or zoom out with given value. Negative values will flip the screen vertically</td>
+    </tr>
+    <tr>
+      <td>Quantize</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Balances level of detail in the screen, creating a retro appearance for low values, such as 8-bits colors. Use 0 to disable it</td>
+    </tr>
+    <tr>
+      <td>OneColor</td>
+      <td>0, 1, 2 or 3</td>
+      <td>0</td>
+      <td>Artistically disables all the colors except one. Use 1 for keep red color, 2 for green color, 3 for blue color, 0 to disable</td>
+    </tr>
+    <tr>
+      <td>Invert</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Invert colors of the screen</td>
+    </tr>
+    <tr>
+      <td>Interlaces</td>
+      <td>Any integer</td>
+      <td>0</td>
+      <td>Applies the given number of black animated bars on the screen, for TV and camera effects</td>
+    </tr>
+    <tr>
+      <td>VignetteRound</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Set vignette shape to be square, circle or spindle-like</td>
+    </tr>
+    <tr>
+      <td>VignetteStart</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Distance from center of the screen to the vignette border. 1.0 makes it the same as screen size</td>
+    </tr>
+    <tr>
+      <td>VignetteWidth</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Width of soft edge gradient. 0.0 for hard edge</td>
+    </tr>
+    <tr>
+      <td>VignetteAspect</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Aspect ratio of the vignette. 1.0 for perfect square/circle</td>
+    </tr>
+  </tbody>
 </table>
 
 ### List of Transitions
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Values</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FromGray / ToGray</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Gray scale transition</td>
+    </tr>
+  </tbody>
+</table>
+
+### DYOM_Shaders Folder
+
+This folder contains many of the essential settings and files for DYOM Visuals properly function. Let's take a look at each of the sub-folders and files inside:
+
+- `Editor.ini`
+
+  This file contains two INI sections for you to customize as you wish.
+
+  - `[EDITOR_SHADERS]`
+
+    Here you can input any valid shader key-value line. It wil be displayed in-game when you are at editor mode. Use F12 (Reload key) to reload shaders and see the modifications you've made
+
+  - `[EDITOR_SHORTCUTS]`
+
+    Here you will be able to customize the keyboard shortcuts of the add-on with any Virtual Keys you want to assign for Reload Key and Preview Mode key.
+
+- `Shaders` folder
+
+  This folder contains all the custom shaders developed in HLSL shader language. There is no reason to edit the files containing inside this folder.
+
+- `Textures` folder
+
+  This folder contains textures used in HLSL shader files.
+
+- `Presets` folder
+
+  This is a special folder that may be useful for you. This folder provides some interesting presets to use in your visuals.ini file. You can store your own presets here for the sake of organization.
+
+### Keyboard Shortcuts
+
+The add-on provide useful shortcuts that you can customize on editor.ini file. They are only used in editor mode.
+
+<table>
+  <thead>
+    <th>Name</th>
+    <th>Default key</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Reload Key</td>
+      <td>F12</td>
+      <td>Reloads the effect present on editor.ini file (or visuals.ini of the loaded mission if preview mode is active)
+    </tr>
+    <tr>
+      <td>Preview Mode</td>
+      <td>F11</td>
+      <td>Switches Preview Mode ON/OFF. When it's OFF, you will see editor.ini's shaders. When it's ON, you will see the loaded mission's visuals.ini's shaders, and it will automatically update when currently selected objective changes.</td>
+    </tr>
+  </tbody>
+</table>

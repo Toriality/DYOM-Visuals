@@ -1,8 +1,8 @@
 
-float vignetteRound  = 0.5; // 0.0 - square, 1.0 - circle, 1< spindle-like
-float vignetteStart = 0.5; // distance from center of the screen to the vignette border. 1.0 - same as screen size. Can be greather than 1.0
-float vignetteWidth = 2.0; // width of soft edge gradient. 0.0 - hard edge
-float vignetteAspect = 1.0; // aspect ratio. 1.0 - prefect square/circle, 0.0 - fitted to screen proportions, less than 0 - wide, greater than 1 - tall
+float vignetteRound  = 1.0; // 0.0 - square, 1.0 - circle, 1< spindle-like
+float vignetteStart = 1.0; // distance from center of the screen to the vignette border. 1.0 - same as screen size. Can be greather than 1.0
+float vignetteWidth = 0.0; // width of soft edge gradient. 0.0 - hard edge
+float vignetteAspect = 0.0; // aspect ratio. 1.0 - prefect square/circle, 0.0 - fitted to screen proportions, less than 0 - wide, greater than 1 - tall
 
 float roundedBoxDistance(float2 pos, float2 size, float radius) 
 {
