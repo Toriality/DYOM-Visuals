@@ -438,7 +438,7 @@ The add-on provide useful shortcuts that you can customize on editor.ini file. T
     <tr>
       <td>Reload Key</td>
       <td>F12</td>
-      <td>Reloads the effect present on editor.ini file (or visuals.ini of the loaded mission if preview mode is active)
+      <td>Reloads the shaders present on editor.ini file (or visuals.ini of the loaded mission if preview mode is active)
     </tr>
     <tr>
       <td>Preview Mode</td>
