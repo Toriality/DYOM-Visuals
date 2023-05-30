@@ -58,331 +58,405 @@ end
 thread "DVISUALS"
 script_name "DVISUALS"
 
+
 :DYOM_INIT
-previewMode = 0
-lastSelected = 0
-LOAD_SHADERS()
-APPLY_SHADERS()
+    previewMode = 0
+    lastSelected = 0
+    LOAD_SHADERS()
+    APPLY_SHADERS()
 return                      
+ 
      
 :DYOM_MISSION_STARTED
-RESET_SHADERS()
+    RESET_SHADERS()
 return
+
 
 :DYOM_MISSION_ENDED
-RESET_SHADERS()
-RESET_EFFECTS()
+    RESET_SHADERS()
+    RESET_EFFECTS()
 return
 
+
 :DYOM_OBJECTIVE_STARTED
-0006: timera = 0
-APPLY_SHADERS()
-APPLY_EFFECTS()
+    0006: timera = 0
+    APPLY_SHADERS()
+    APPLY_EFFECTS()
 return
+
 
 :DYOM_OBJECTIVE_ENDED
 return
 
+
 :DYOM_RUN
-// If in editor mode
-if
-    $ONMISSION == 0
-then
-    008B: 0@ = $15617
-    //003C:   $CAR_MODELS_TO_EXPORT(4@,10i) == 6@  // (int)
-    // 003B:   18@ == 21@  // (int)
-    // If preview mode is on, update shaders every time current selected objective changes
-    if 
-        0039: previewMode == 1
+    // If in editor mode
+    if
+        $ONMISSION == 0
     then
-        if
-            07D6: lastSelected == $15617 // @ == $ (int)
+        008B: 0@ = $15617 // index of selected objective in editor
+    
+        // If preview mode is on, update shaders every time current selected objective changes
+        if 
+            0039: previewMode == 1
         then
-        else
+            if
+                07D6: lastSelected == $15617 // @ == $ (int)
+            then
+            else
+                APPLY_SHADERS()
+                008B: lastSelected = $15617
+            end     
+        end
+        // Set preview mode on/off
+        if
+            is_key_pressed 0x7A // F11
+        then
+            while is_key_pressed 0x7A // wait for key release
+                wait 0
+            end
+            previewMode = 1 - previewMode
+            if
+                previewMode == 0
+            then
+                0ACE: show_formatted_text_box "Preview mode is: ~r~OFF~s~"
+            else
+                0ACE: show_formatted_text_box "Preview mode is: ~g~ON~s~"
+            end
+            RESET_SHADERS()        
             APPLY_SHADERS()
-            008B: lastSelected = $15617
-        end     
-    end
-    // Set preview mode on/off
-    if
-        is_key_pressed 0x7A // F11
-    then
-        while is_key_pressed 0x7A // wait for key release
-            wait 0
         end
-        previewMode = 1 - previewMode
+        // Reload shaders
         if
-            previewMode == 0
+            is_key_pressed 0x7B // F12
         then
-            0ACE: show_formatted_text_box "Preview mode is: ~r~OFF~s~"
-        else
-            0ACE: show_formatted_text_box "Preview mode is: ~g~ON~s~"
+            while is_key_pressed 0x7B // wait for key release
+                wait 0
+            end
+            APPLY_SHADERS()   
         end
-        RESET_SHADERS()        
-        APPLY_SHADERS()
     end
-    // Reload shaders
-    if
-        is_key_pressed 0x7B // F12
-    then
-        while is_key_pressed 0x7B // wait for key release
-            wait 0
-        end
-        APPLY_SHADERS()   
-    end
-end
-// Update time float variable and draw shaders both on play and editor
-008F: fTime = integer TimerA to_float
-fTime /= 1000.0
-shader.SetFloat(hShader, "time", fTime)
-shader.Draw(hShader, "draw", SCREEN_BASE_X, SCREEN_BASE_Y, SCREEN_SIZE_X, SCREEN_SIZE_Y)
+    
+    // Update time float variable and draw shaders both on play and editor
+    008F: fTime = integer TimerA to_float
+    fTime /= 1000.0
+    shader.SetFloat(hShader, "time", fTime)
+    shader.Draw(hShader, "draw", SCREEN_BASE_X, SCREEN_BASE_Y, SCREEN_SIZE_X, SCREEN_SIZE_Y)
 return
+
 
 :DYOM_MISSION_RUN
-FORCE_AIMING()
-FORCE_WALKING()
-FORCE_BUMPER()
+    FORCE_AIMING()
+    FORCE_WALKING()
+    FORCE_BUMPER()
 return
+
 
 :FORCE_AIMING
-if
-    forceAiming == 1
-then
-0ACE: show_formatted_text_box "This is %.4X opcode" 0x0ACE
-
-    cleo_call @FORCE_KEYPRESS 1 args 12     
-end
+    if
+        forceAiming == 1
+    then
+    0ACE: show_formatted_text_box "This is %.4X opcode" 0x0ACE
+    
+        cleo_call @FORCE_KEYPRESS 1 args 12     
+    end
+    return
+    
+    :FORCE_WALKING
+    if
+        forceWalking == 1
+    then
+        cleo_call @FORCE_KEYPRESS 1 args 42
+    end
 return
 
-:FORCE_WALKING
-if
-    forceWalking == 1
-then
-    cleo_call @FORCE_KEYPRESS 1 args 42
-end
-return
 
 :FORCE_BUMPER
-if
-    forceBumper == 1
-then
-    09AD: set_vehicle_camera_mode 0
-end
+    if
+        forceBumper == 1
+    then
+        09AD: set_vehicle_camera_mode 0
+    end
 return
 
+
 :LOAD_SHADERS
-set_current_directory 0
-if
-    hShader = shader.Load("cleo/dyom_shaders/shaders/_main.hlsl")
-then
-else
-    0AD1: show_formatted_text_highpriority "~r~~h~Failed to load DYOM Visuals shader!" time 6000
-    0A93: terminate_this_custom_script
-end
-    
-// have to be used at least once to be able to set parameters
-shader.Draw(hShader, "draw", 0.0, 0.0, 0.0, 0.0)
-    
-// get screen X size
-read_memory 0@ = read_memory 0x00C17044 size 4 virtual_protect 0
-0093: 0@ = integer 0@ to_float
-shader.SetFloat(hShader, "screenWidth", 0@)
-    
-// get screen Y size
-read_memory 0@ = read_memory 0x00C17048 size 4 virtual_protect 0
-0093: 0@ = integer 0@ to_float
-shader.SetFloat(hShader, "screenHeight", 0@)
+    set_current_directory 0 // game dir
+    if
+        hShader = shader.Load("cleo/dyom_shaders/shaders/_main.hlsl")
+    then
+    else
+        0AD1: show_formatted_text_highpriority "~r~~h~Failed to load DYOM Visuals shader!" time 6000
+        0A93: terminate_this_custom_script
+    end
+        
+    // have to be used at least once to be able to set parameters
+    shader.Draw(hShader, "draw", 0.0, 0.0, 0.0, 0.0)
+        
+    // get screen X size
+    read_memory 0@ = read_memory 0x00C17044 size 4 virtual_protect 0
+    0093: 0@ = integer 0@ to_float
+    shader.SetFloat(hShader, "screenWidth", 0@)
+        
+    // get screen Y size
+    read_memory 0@ = read_memory 0x00C17048 size 4 virtual_protect 0
+    0093: 0@ = integer 0@ to_float
+    shader.SetFloat(hShader, "screenHeight", 0@)
 return
 
 
 :APPLY_EFFECTS 
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'speed'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fov'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceCinematic'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceBumper'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceWalking'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceAiming'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'drunkenness'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'darkness'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fadeout'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fadein'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'shake'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'siteorkcet'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'radar'
-cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'hud'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'speed'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fov'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceCinematic'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceBumper'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceWalking'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'forceAiming'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'drunkenness'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'darkness'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fadeout'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'fadein'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'shake'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'siteorkcet'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'radar'
+    cleo_call @EFFECT_READ_CONFIG_PARAM args 1 'hud'
 return
+
 
 :RESET_EFFECTS
-015D: set_gamespeed 1.0
-0931: lock_camera_zoom 0
-0006: forceBumper = 0
-093D: lock_camera_on_cinematic_view 0
-0006: forceCinematic = 0
-0006: forceWalking = 0
-06AF: set_player $PLAYER_CHAR sprint_mode 0 // 1 to disable 0 to enable sprint
-0901: enable_player $PLAYER_CHAR jump_key 1
-082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1
-0006: forceAiming = 0
-0992: set_player $PLAYER_CHAR weapons_scrollable 1
-052C: set_player $PLAYER_CHAR drunk_visuals 0
-0924: enable_screen_darkness 0 with_value -1
-016A: fade 0 time 0
-016A: fade 1 time 0
-0003: shake_camera 0
-09A3: show_siterocket_on_bumper_camera 0
-0581: enable_radar 1
-0826: enable_hud 1
-09B9: show_entered_car_name 1
-09BA: show_entered_zone_name 1
+    015D: set_gamespeed 1.0
+    0931: lock_camera_zoom 0
+    forceBumper = 0
+    093D: lock_camera_on_cinematic_view 0
+    forceCinematic = 0
+    forceWalking = 0
+    06AF: set_player $PLAYER_CHAR sprint_mode 0 // 1 to disable 0 to enable sprint
+    0901: enable_player $PLAYER_CHAR jump_key 1
+    082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1
+    forceAiming = 0
+    0992: set_player $PLAYER_CHAR weapons_scrollable 1
+    052C: set_player $PLAYER_CHAR drunk_visuals 0
+    0924: enable_screen_darkness 0 with_value -1
+    016A: fade 0 time 0
+    016A: fade 1 time 0
+    0003: shake_camera 0
+    09A3: show_siterocket_on_bumper_camera 0
+    0581: enable_radar 1
+    0826: enable_hud 1
+    09B9: show_entered_car_name 1
+    09BA: show_entered_zone_name 1
 return
+
 
 :APPLY_SHADERS 
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'brightness'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'contrast'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'saturation'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'tint'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'hue'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinRed'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxRed'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinRed'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxRed'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinGreen'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxGreen'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinGreen'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxGreen'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinBlue'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxBlue'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinBlue'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxBlue'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'distort'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'rainDrops'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'flipY'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'flipX'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'barsWidth'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'barsHeight'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitch'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitchY'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitchXs'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'zoom'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'quantize'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'oneColor'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'invert'
-cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'interlaces'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'brightness'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'contrast'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'saturation'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'tint'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'hue'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinRed'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxRed'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinRed'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxRed'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinGreen'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxGreen'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinGreen'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxGreen'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMinBlue'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'inputMaxBlue'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMinBlue'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'outputMaxBlue'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'distort'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'rainDrops'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'flipY'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'flipX'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'barsWidth'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'barsHeight'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitch'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitchY'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'glitchXs'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'zoom'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'quantize'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'oneColor'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'invert'
+    cleo_call @SHADER_READ_CONFIG_PARAM args 3 hShader previewMode 'interlaces'
 return
+
 
 :RESET_SHADERS 
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'brightness'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'contrast'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'saturation'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'tint'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'hue'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinRed'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxRed'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinRed'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxRed'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinGreen'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxGreen'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinGreen'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxGreen'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinBlue'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxBlue'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinBlue'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxBlue'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'distort'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'rainDrops'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'flipY'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'flipX'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'barsWidth'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'barsHeight'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'glitch'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.1 'glitchY'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.1 'glitchXs'
-cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'zoom'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'quantize'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'oneColor'
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'invert' 
-cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'interlaces'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'brightness'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'contrast'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'saturation'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'tint'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'hue'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinRed'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxRed'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinRed'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxRed'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinGreen'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxGreen'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinGreen'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxGreen'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'inputMinBlue'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'inputMaxBlue'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'outputMinBlue'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'outputMaxBlue'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'distort'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'rainDrops'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'flipY'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'flipX'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'barsWidth'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'barsHeight'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'glitch'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.1 'glitchY'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.1 'glitchXs'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 1.0 'zoom'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'quantize'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'oneColor'
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'invert' 
+    cleo_call @SHADER_SET_PARAM args 3 hShader 0.0 'interlaces'
 return
 
-:FORCE_KEYPRESS
-0@ += 0xB734D0 // High Priority Controls
-0A8C: write_memory 0@ size 1 value 255 virtual_protect 0
-cleo_return 0
 
-// arg 0 - shader handle
-// arg 1 - preview mode
-// arg 2 - param name
-:SHADER_READ_CONFIG_PARAM
-// copy param name
-read_memory 3@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 4@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 5@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 6@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-             
-// Check if editor mode or play mode
-if
-    $ONMISSION == 0
-then  
+:FORCE_KEYPRESS
+    0@ += 0xB734D0 // High Priority Controls
+    0A8C: write_memory 0@ size 1 value 255 virtual_protect 0
+    cleo_return 0
+    
+    // arg 0 - shader handle
+    // arg 1 - preview mode
+    // arg 2 - param name
+    :SHADER_READ_CONFIG_PARAM
+    // copy param name
+    read_memory 3@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 4@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 5@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 6@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+                 
+    // Check if editor mode or play mode
     if
-        1@ == 0  // preview mode off
-    then           
-        set_current_directory 0
+        $ONMISSION == 0
+    then  
         if
-            0AF2: 20@ = read_float_from_ini_file "cleo/dyom_shaders/editor.ini" section "EDITOR_SHADERS" key 3@v
-        then
-            shader.SetFloat(0@, 3@v, 20@)
-            0AD1: show_formatted_text_highpriority "Loaded shaders for DYOM Editor" time 3000
-        end
-    else // preview mode on               
-        set_current_directory 1
-        // prepare settings file path
-        string_format 8@v = string_format "%s" v$9905 // copy current mission sound file path   
-        0AC7: 7@ = var 8@ offset
-            
-        // set filename in the path
-        7@ += 9 // skip to filename start
-        write_memory 7@ size 1 value 0x65 virtual_protect 0 // put 'e'
-        7@ += 1
-        write_memory 7@ size 1 value 0x66 virtual_protect 0 // put 'f'
-        7@ += 1
-        write_memory 7@ size 1 value 0x66 virtual_protect 0 // put 'f'
-        7@ += 1
-        write_memory 7@ size 1 value 0x65 virtual_protect 0 // put 'e'
-        7@ += 1
-        write_memory 7@ size 1 value 0x63 virtual_protect 0 // put 'c'
-        7@ += 1
-        write_memory 7@ size 1 value 0x74 virtual_protect 0 // put 't'
-        7@ += 1
-        write_memory 7@ size 1 value 0x00 virtual_protect 0 // put '\0'
-       
-        // If SD/<CODE>/Visuals.ini file exists 
-        if
-            0AAB:   does_file_exist 8@v
-        then
-            // section name
-            008B: 1@ = $15617
-            string_format 12@v = string_format "OBJECTIVE_%d" 1@
-            // TODO: Check if OBJECTIVE_ID section exists, display warning if it doesn't
+            1@ == 0  // preview mode off
+        then           
+            set_current_directory 0
             if
-                0AF2: 20@ = read_float_from_ini_file 8@v section 12@v key 3@v
+                0AF2: 20@ = read_float_from_ini_file "cleo/dyom_shaders/editor.ini" section "EDITOR_SHADERS" key 3@v
             then
                 shader.SetFloat(0@, 3@v, 20@)
-                0AD1: show_formatted_text_highpriority "~g~OK:~s~ Loaded shaders for Objective %d" time 3000 $15617
+                0AD1: show_formatted_text_highpriority "Loaded shaders for DYOM Editor" time 3000
             end
-        // If the Visuals.ini does not exists
-        else
-            0AD1: show_formatted_text_highpriority "~r~ERROR:~s~ Visuals.ini not found. Please create a valid %s file" time 3000 8@v
-        end   
-    end
-else    
+        else // preview mode on               
+            set_current_directory 1
+            // prepare settings file path
+            string_format 8@v = string_format "%s" v$9905 // copy current mission sound file path   
+            0AC7: 7@ = var 8@ offset
+                
+            // set filename in the path
+            7@ += 9 // skip to filename start
+            write_memory 7@ size 1 value 0x65 virtual_protect 0 // put 'e'
+            7@ += 1
+            write_memory 7@ size 1 value 0x66 virtual_protect 0 // put 'f'
+            7@ += 1
+            write_memory 7@ size 1 value 0x66 virtual_protect 0 // put 'f'
+            7@ += 1
+            write_memory 7@ size 1 value 0x65 virtual_protect 0 // put 'e'
+            7@ += 1
+            write_memory 7@ size 1 value 0x63 virtual_protect 0 // put 'c'
+            7@ += 1
+            write_memory 7@ size 1 value 0x74 virtual_protect 0 // put 't'
+            7@ += 1
+            write_memory 7@ size 1 value 0x00 virtual_protect 0 // put '\0'
+           
+            // If SD/<CODE>/Visuals.ini file exists 
+            if
+                0AAB:   does_file_exist 8@v
+            then
+                // section name
+                008B: 1@ = $15617
+                string_format 12@v = string_format "OBJECTIVE_%d" 1@
+                // TODO: Check if OBJECTIVE_ID section exists, display warning if it doesn't
+                if
+                    0AF2: 20@ = read_float_from_ini_file 8@v section 12@v key 3@v
+                then
+                    shader.SetFloat(0@, 3@v, 20@)
+                    0AD1: show_formatted_text_highpriority "~g~OK:~s~ Loaded shaders for Objective %d" time 3000 $15617
+                end
+            // If the Visuals.ini does not exists
+            else
+                0AD1: show_formatted_text_highpriority "~r~ERROR:~s~ Visuals.ini not found. Please create a valid %s file" time 3000 8@v
+            end   
+        end
+    else    
+        set_current_directory 1
+        // prepare settings file path
+        string_format 7@v = string_format "%s" v$9905 // copy current mission sound file path   
+        0AC7: 6@ = var 7@ offset
+                
+        // set filename in the path
+        6@ += 9 // skip to filename start
+        write_memory 6@ size 1 value 0x65 virtual_protect 0 // put 'e'
+        6@ += 1
+        write_memory 6@ size 1 value 0x66 virtual_protect 0 // put 'f'
+        6@ += 1
+        write_memory 6@ size 1 value 0x66 virtual_protect 0 // put 'f'
+        6@ += 1
+        write_memory 6@ size 1 value 0x65 virtual_protect 0 // put 'e'
+        6@ += 1
+        write_memory 6@ size 1 value 0x63 virtual_protect 0 // put 'c'
+        6@ += 1
+        write_memory 6@ size 1 value 0x74 virtual_protect 0 // put 't'
+        6@ += 1
+        write_memory 6@ size 1 value 0x00 virtual_protect 0 // put '\0'
+        
+        // section name
+        008B: 1@ = dyom_objective_index
+        1@ += 1 // 1-based
+        string_format 11@v = string_format "OBJECTIVE_%d" 1@
+        if
+            0AF2: 20@ = read_float_from_ini_file 7@v section 11@v key 3@v
+        then
+            shader.SetFloat(0@, 3@v, 20@)   
+        end     
+    end 
+cleo_return 0
+
+
+// arg 0 - shader handle
+// arg 1 - (float) param value
+// arg 2 - param name
+:SHADER_SET_PARAM
+    read_memory 3@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 4@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 5@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    2@ += 4
+    read_memory 6@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
+    shader.SetFloat(0@, 3@v, 1@)
+cleo_return 0
+
+    
+// arg 0 - effect name
+:EFFECT_READ_CONFIG_PARAM
+    // copy param name
+    read_memory 1@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
+    0@ += 4
+    read_memory 2@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
+    0@ += 4
+    read_memory 3@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
+    0@ += 4
+    read_memory 4@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
+    
     set_current_directory 1
     // prepare settings file path
     string_format 7@v = string_format "%s" v$9905 // copy current mission sound file path   
     0AC7: 6@ = var 7@ offset
-            
+                
     // set filename in the path
     6@ += 9 // skip to filename start
     write_memory 6@ size 1 value 0x65 virtual_protect 0 // put 'e'
@@ -400,189 +474,118 @@ else
     write_memory 6@ size 1 value 0x00 virtual_protect 0 // put '\0'
     
     // section name
-    008B: 1@ = dyom_objective_index
-    1@ += 1 // 1-based
-    string_format 11@v = string_format "OBJECTIVE_%d" 1@
+    008B: 5@ = dyom_objective_index
+    5@ += 1 // 1-based
+    string_format 11@v = string_format "OBJECTIVE_%d" 5@
     if
-        0AF2: 20@ = read_float_from_ini_file 7@v section 11@v key 3@v
+        0AF2: 20@ = read_float_from_ini_file 7@v section 11@v key 1@v
     then
-        shader.SetFloat(0@, 3@v, 20@)   
-    end     
-end 
-cleo_return 0
-
-
-// arg 0 - shader handle
-// arg 1 - (float) param value
-// arg 2 - param name
-:SHADER_SET_PARAM
-read_memory 3@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 4@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 5@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-2@ += 4
-read_memory 6@ = read_memory 2@ size 4 virtual_protect 0 // 4 chars
-shader.SetFloat(0@, 3@v, 1@)
-cleo_return 0
-
-// arg 0 - effect name
-:EFFECT_READ_CONFIG_PARAM
-// copy param name
-read_memory 1@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
-0@ += 4
-read_memory 2@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
-0@ += 4
-read_memory 3@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
-0@ += 4
-read_memory 4@ = read_memory 0@ size 4 virtual_protect 0 // 4 chars
-
-set_current_directory 1
-// prepare settings file path
-string_format 7@v = string_format "%s" v$9905 // copy current mission sound file path   
-0AC7: 6@ = var 7@ offset
-            
-// set filename in the path
-6@ += 9 // skip to filename start
-write_memory 6@ size 1 value 0x65 virtual_protect 0 // put 'e'
-6@ += 1
-write_memory 6@ size 1 value 0x66 virtual_protect 0 // put 'f'
-6@ += 1
-write_memory 6@ size 1 value 0x66 virtual_protect 0 // put 'f'
-6@ += 1
-write_memory 6@ size 1 value 0x65 virtual_protect 0 // put 'e'
-6@ += 1
-write_memory 6@ size 1 value 0x63 virtual_protect 0 // put 'c'
-6@ += 1
-write_memory 6@ size 1 value 0x74 virtual_protect 0 // put 't'
-6@ += 1
-write_memory 6@ size 1 value 0x00 virtual_protect 0 // put '\0'
-
-// section name
-008B: 5@ = dyom_objective_index
-5@ += 1 // 1-based
-string_format 11@v = string_format "OBJECTIVE_%d" 5@
-if
-    0AF2: 20@ = read_float_from_ini_file 7@v section 11@v key 1@v
-then
-    // Apply effects
-    if
-        1@v == "speed"
-    then
-        015D: set_gamespeed 20@
-    end
-    
-    if
-        1@v == "fov"
-    then
-        0922: set_camera_zoom_from 20@ to 20@ timelimit 1000 smooth_transition 0
-        0931: lock_camera_zoom 1
-    end
-    
-    if
-        1@v == "forceCinematic"
-    then
-        0092: 20@ = float 20@ to_integer
-        0006: forceCinematic = 20@
-        093D: lock_camera_on_cinematic_view 20@
-    end
-    
-    if
-        1@v == "forceBumper"
-    then
-        0092: 20@ = float 20@ to_integer
-        0006: forceBumper = 20@
-    end
-    
-    if
-        1@v == "forceWalking"
-    then 
-        0092: 20@ = float 20@ to_integer
-        0006: forceWalking = 20@
-        06AF: set_player $PLAYER_CHAR sprint_mode 20@ // 1 to disable 0 to enable sprint
-        20@ = 1 - 20@ // if 8@ = 1 then 0, if 8@ = 0, then 1
-        0901: enable_player $PLAYER_CHAR jump_key 20@
-        082A: set_player $PLAYER_CHAR able_to_use_crouch_button 20@
-    end
-    
-    if
-        1@v == "forceAiming"
-    then
-        0092: 20@ = float 20@ to_integer
-        0085: forceAiming = 20@ // (int)
-        20@ = 1 - 20@ // if 8@ = 1 then 0, if 8@ = 0, then 1
-        0992: set_player $PLAYER_CHAR weapons_scrollable 20@
+        // Apply effects
+        if
+            1@v == "speed"
+        then
+            015D: set_gamespeed 20@
+        end
         
+        if
+            1@v == "fov"
+        then
+            0922: set_camera_zoom_from 20@ to 20@ timelimit 1000 smooth_transition 0
+            0931: lock_camera_zoom 1
+        end
+        
+        if
+            1@v == "forceCinematic"
+        then
+            0092: 20@ = float 20@ to_integer
+            0006: forceCinematic = 20@
+            093D: lock_camera_on_cinematic_view 20@
+        end
+        
+        if
+            1@v == "forceBumper"
+        then
+            0092: 20@ = float 20@ to_integer
+            0006: forceBumper = 20@
+        end
+        
+        if
+            1@v == "forceWalking"
+        then 
+            0092: 20@ = float 20@ to_integer
+            0006: forceWalking = 20@
+            06AF: set_player $PLAYER_CHAR sprint_mode 20@ // 1 to disable 0 to enable sprint
+            20@ = 1 - 20@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+            0901: enable_player $PLAYER_CHAR jump_key 20@
+            082A: set_player $PLAYER_CHAR able_to_use_crouch_button 20@
+        end
+        
+        if
+            1@v == "forceAiming"
+        then
+            0092: 20@ = float 20@ to_integer
+            0085: forceAiming = 20@ // (int)
+            20@ = 1 - 20@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+            0992: set_player $PLAYER_CHAR weapons_scrollable 20@
+            
+        end
+        
+        if
+            1@v == "drunkenness"
+        then
+            0092: 20@ = float 20@ to_integer
+            052C: set_player $PLAYER_CHAR drunk_visuals 20@
+        end
+        
+        if
+            1@v == "darkness"
+        then
+            0092: 20@ = float 20@ to_integer
+            0924: enable_screen_darkness 20@ with_value -1
+        end
+        
+        if
+            1@v == "fadeout"
+        then
+            0092: 20@ = float 20@ to_integer
+            016A: fade 0 time 20@
+        end
+        
+        if
+            1@v == "fadein"
+        then
+            0092: 20@ = float 20@ to_integer
+            016A: fade 1 time 20@
+        end
+        
+        if
+            1@v == "shake"
+        then
+            0092: 20@ = float 20@ to_integer
+            0003: shake_camera 20@
+        end
+        
+        if
+            1@v == "siterocket"
+        then
+            0092: 20@ = float 20@ to_integer
+            09A3: show_siterocket_on_bumper_camera 20@
+        end
+        
+        if
+            1@v == "radar"
+        then
+            0092: 20@ = float 20@ to_integer
+            0581: enable_radar 20@
+        end
+        
+        if
+            1@v == "hud"
+        then
+            0092: 20@ = float 20@ to_integer
+            0826: enable_hud 20@
+            09B9: show_entered_car_name 20@
+            09BA: show_entered_zone_name 20@
+        end
     end
-    
-    if
-        1@v == "drunkenness"
-    then
-        0092: 20@ = float 20@ to_integer
-        052C: set_player $PLAYER_CHAR drunk_visuals 20@
-    end
-    
-    if
-        1@v == "darkness"
-    then
-        0092: 20@ = float 20@ to_integer
-        0924: enable_screen_darkness 20@ with_value -1
-    end
-    
-    if
-        1@v == "fadeout"
-    then
-        0092: 20@ = float 20@ to_integer
-        016A: fade 0 time 20@
-    end
-    
-    if
-        1@v == "fadein"
-    then
-        0092: 20@ = float 20@ to_integer
-        016A: fade 1 time 20@
-    end
-    
-    if
-        1@v == "shake"
-    then
-        0092: 20@ = float 20@ to_integer
-        0003: shake_camera 20@
-    end
-    
-    if
-        1@v == "siterocket"
-    then
-        0092: 20@ = float 20@ to_integer
-        09A3: show_siterocket_on_bumper_camera 20@
-    end
-    
-    if
-        1@v == "radar"
-    then
-        0092: 20@ = float 20@ to_integer
-        0581: enable_radar 20@
-    end
-    
-    if
-        1@v == "hud"
-    then
-        0092: 20@ = float 20@ to_integer
-        0826: enable_hud 20@
-        09B9: show_entered_car_name 20@
-        09BA: show_entered_zone_name 20@
-    end
-end
 cleo_return 0
-
-
-
-
-
-
-
-
-
-
-
-
