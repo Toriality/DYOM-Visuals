@@ -8,6 +8,7 @@
 jump @UTILS_END // do not execute any code from this file yet
 
 
+
 // Check if string starts with given prefix (case sensitive)
 // arg 0@ - prefix text
 // arg 1@ - reserved (occupied by prefix text too)

@@ -1,3 +1,6 @@
+float barWidth = 0.0;
+float barHeight = 0.0;
+
 float2 PS_Bars(float2 uv)
 {
     float leftBar = step(uv.x, barWidth);

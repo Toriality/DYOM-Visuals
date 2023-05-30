@@ -1,6 +1,8 @@
+bool rainDrops = false;
+
 float4 PS_Raindrops(float4 color, float2 uv)
 {
-    if (useRainDrops == false)
+    if (rainDrops == false)
     {
         return color; 
     }

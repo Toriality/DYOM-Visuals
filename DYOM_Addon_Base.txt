@@ -12,7 +12,7 @@ const
 end
 
 0000: NOP
-wait 0 ms // give other things time to start
+wait 1000 ms // give other things time to start
 
 if
     CHECK_FOR_DYOM() 
