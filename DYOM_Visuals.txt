@@ -81,6 +81,7 @@ return
 :DYOM_OBJECTIVE_STARTED
     TimerB = 0 // objective time
     
+    0@ += 1 // 1-based objective index
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ // current objective
     // TODO: update effects
 return
