@@ -1,8 +1,16 @@
 shared texture screen : SCREEN_TEX; 
+shared texture depthscreen : DEPTH_TEX;
 
 extern sampler2D screenSampler = sampler_state
 {
     Texture = <screen>;
+	AddressU = MIRROR;
+	AddressV = MIRROR;
+};
+
+extern sampler2D depthSampler = sampler_state
+{
+    Texture = <depthscreen>;
 	AddressU = MIRROR;
 	AddressV = MIRROR;
 };
@@ -29,6 +37,8 @@ float time = 12.08912;
 #include "flip.hlsl"
 #include "distort.hlsl"
 #include "interlaces.hlsl"
+#include "fog.hlsl"
+#include "desolate.hlsl"
 #include "transitions.hlsl"
 
 float4 PS_main(float2 uv : TEXCOORD): COLOR
@@ -44,8 +54,13 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
 	
 	// Sample the screen with the modified UV
     float4 color = tex2D(screenSampler, uv);
-	
-    // Apply shaders
+    float depth = tex2D(depthSampler, uv).x;
+
+    // Depth shaders
+    color = PS_Fog(color, depth);
+    color = PS_Desolate(color, depth);
+
+    // Screen shaders
     color = PS_Glitch(color, uv);
     color = PS_Raindrops(color, uv);
     color = PS_Brightness(color);
@@ -59,8 +74,9 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     color = PS_OneColor(color);
     color.rgb = PS_Interlaces(color, uv);
     color = PS_Vignette(color, uv);
-    //color = PS_fromGray(color);
-    //color = PS_toGray(color);
+    color = PS_fromGray(color);
+    color = PS_toGray(color);
+    
     return color;
 }
 
