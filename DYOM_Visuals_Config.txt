@@ -1,0 +1,87 @@
+
+// utils for handling configuration .ini files
+
+jump @DYOM_VISUALS_CONFIG_END // do not execute any code from this file yet
+
+
+// get filepath of the effect file for current mission
+// return - string with path
+:CONFIG_GET_FILEPATH
+    // prepare settings file path
+    string_format 0@v = string_format "%s" v$9905 // copy current mission sound file path   
+    
+    // set filename in the path
+    0AC7: 4@ = var 0@ offset
+    4@ += 9 // skip to filename start
+    string_format 4@ = string_format "effect" // copy string
+            
+cleo_return 4 0@ 1@ 2@ 3@
+
+
+// heck if effect config file exists for current mission
+// function sets condition result
+:CONFIG_EXISTS
+    cleo_call @CONFIG_GET_FILEPATH args 0 result 0@ 1@ 2@ 3@
+            
+    set_current_directory 1
+    if
+        does_file_exist 0@v
+    then
+        0485: set_condition_true 
+    else
+        059A: set_condition_false
+    end
+cleo_return 0
+
+
+// arg 0 - objective idx, -1 use editor.ini, -2 just set default param
+// arg 1 - (float) default parameter value 
+// arg 2 - parameter name
+// return - (float) read parameter value
+:CONFIG_READ_PARAM
+    // Check if editor mode or play mode
+    if
+        0@ >= 0
+    then
+        if
+            not cleo_call @CONFIG_EXISTS args 0
+        then
+            cleo_return 1 1@ // no file to read, return default value
+        end
+        
+        // param name
+        string_format 4@v = string_format "%s" 4@ 
+    
+        // file name
+        cleo_call @CONFIG_GET_FILEPATH args 0 result 8@ 9@ 10@ 11@
+        set_current_directory 1 // user files
+        
+        // parameters persists between objectives, so process all until requested objective
+        for 12@ = 1 to 0@
+            // section name
+            string_format 13@v = string_format "OBJECTIVE_%d" 12@
+            
+            if
+                0AF2: 20@ = read_float_from_ini_file 8@v section 13@v key 4@v
+            then
+                0087: 1@ = 20@
+            end     
+        end
+    else
+        if
+            0@ == -1 // use editor.ini
+        then
+            string_format 4@v = string_format "%s" 4@ // copy param name into local variables
+             
+            set_current_directory 0 // game root
+            if
+                0AF2: 20@ = read_float_from_ini_file "cleo/dyom_shaders/editor.ini" section "EDITOR_SHADERS" key 4@v
+            then
+                0087: 1@ = 20@
+            end
+        end
+    end    
+ cleo_return 1 1@
+
+
+:DYOM_VISUALS_CONFIG_END

@@ -1,0 +1,103 @@
+
+jump @DYOM_VISUALS_SHADERS_END // do not execute any code from this file yet
+
+
+:SHADERS_INIT
+    set_current_directory 0 // game dir
+    if
+        hShader = shader.Load("cleo/dyom_shaders/shaders/_main.hlsl")
+    then
+    else
+        0AD1: show_formatted_text_highpriority "~r~~h~Failed to load DYOM Visuals shader!" time 6000
+        0A93: terminate_this_custom_script
+    end
+        
+    // have to be used at least once to be able to set parameters
+    shader.Draw(hShader, "draw", 0.0, 0.0, 0.0, 0.0)
+        
+    // get screen X size
+    read_memory 0@ = read_memory 0x00C17044 size 4 virtual_protect 0
+    0093: 0@ = integer 0@ to_float
+    shader.SetFloat(hShader, "screenWidth", 0@)
+        
+    // get screen Y size
+    read_memory 0@ = read_memory 0x00C17048 size 4 virtual_protect 0
+    0093: 0@ = integer 0@ to_float
+    shader.SetFloat(hShader, "screenHeight", 0@)
+return
+
+
+// calculate and send peer frame contstants to the shaders
+// arg 0 - shader handle
+:SHADERS_CONSTANTS_UPDATE
+
+    008F: 1@ = integer TimerA to_float
+    1@ /= 1000.0
+    shader.SetFloat(hShader, "timeObjective", 1@)
+
+cleo_return 0
+
+// arg 0 - shader handle
+:SHADERS_DRAW
+    shader.Draw(0@, "draw", SCREEN_BASE_X, SCREEN_BASE_Y, SCREEN_SIZE_X, SCREEN_SIZE_Y)
+cleo_return 0
+
+
+// load parameters from config or apply defaults
+// arg 0 - shader handle
+// arg 1 - objective idx, -1 use editor.ini, -2 just set default param
+:SHADERS_CONFIG_UPDATE_PARAMS
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'brightness'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'contrast'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'saturation'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'tint'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'hue'
+    
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'inputMinRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'inputMaxRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'outputMinRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'outputMaxRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'inputMinGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'inputMaxGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'outputMinGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'outputMaxGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'inputMinBlue'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'inputMaxBlue'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'outputMinBlue'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'outputMaxBlue'
+    
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'distort'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'rainDrops'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'flipY'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'flipX'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'barsWidth'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'barsHeight'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'glitch'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.1 'glitchY'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.1 'glitchXs'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'zoom'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'quantize'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'oneColor'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'invert' 
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'interlaces'
+        
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.5 'vignetteRound' 
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 2.0 'vignetteStart'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteWidth'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteAspect'
+return
+
+
+// arg 0 - shader handle
+// arg 1 - objective idx, -1 use editor.ini, -2 just set default param
+// arg 2 - (float) default parameter value 
+// arg 3 - parameter name
+:SHADERS_CONFIG_READ_PARAM
+    cleo_call @CONFIG_READ_PARAM args 3 1@ 2@ 3@ result 2@
+    
+    string_format 4@v = string_format "%s" 3@ // copy param name into local variables
+    shader.SetFloat(0@, 4@v, 2@)  
+ cleo_return 0
+
+
+:DYOM_VISUALS_SHADERS_END
