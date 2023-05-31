@@ -39,6 +39,7 @@ const
     forceCinematic = 14@
     previewMode = 15@
     lastSelected = 16@
+    wasOnMission = 17@
 end
 
 var
@@ -49,6 +50,7 @@ var
     forceCinematic: int
     previewMode: int
     lastSelected: int
+    wasOnMission: int
 end
 
 script_name "DVISUALS"
@@ -62,6 +64,7 @@ script_name "DVISUALS"
 :DYOM_INIT
     previewMode = -1 // force update first time
     lastSelected = 0
+    wasOnMission = 0
     
     SHADERS_INIT()
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
@@ -69,6 +72,10 @@ return
  
      
 :DYOM_MISSION_STARTED
+    // Force shaders to load mission's first objective shaders when starting the mission,
+    // avoiding preview mode to keep the editor's selected objective shaders
+    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 1 // Objective ID 1
+    wasOnMission = 1
     TimerA = 0 // mission time
 return
 
@@ -118,6 +125,14 @@ return
             87D6: lastSelected <> $15617
         then
             008B: lastSelected = $15617
+            0@ = true // update needed
+        end
+        
+        // Should reset shaders after mission ends
+        if
+            wasOnMission == 1
+        then
+            wasOnMission = 0
             0@ = true // update needed
         end
         
