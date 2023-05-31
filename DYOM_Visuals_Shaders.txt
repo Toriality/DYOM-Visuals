@@ -85,7 +85,7 @@ cleo_return 0
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 2.0 'vignetteStart'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteWidth'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteAspect'
-return
+cleo_return 0
 
 
 // arg 0 - shader handle

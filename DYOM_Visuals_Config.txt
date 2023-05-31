@@ -39,6 +39,9 @@ cleo_return 0
 // arg 2 - parameter name
 // return - (float) read parameter value
 :CONFIG_READ_PARAM
+    // param name
+    string_format 4@v = string_format "%s" 2@
+        
     // Check if editor mode or play mode
     if
         0@ >= 0
@@ -49,9 +52,6 @@ cleo_return 0
             cleo_return 1 1@ // no file to read, return default value
         end
         
-        // param name
-        string_format 4@v = string_format "%s" 4@ 
-    
         // file name
         cleo_call @CONFIG_GET_FILEPATH args 0 result 8@ 9@ 10@ 11@
         set_current_directory 1 // user files
@@ -60,7 +60,7 @@ cleo_return 0
         for 12@ = 1 to 0@
             // section name
             string_format 13@v = string_format "OBJECTIVE_%d" 12@
-            
+
             if
                 0AF2: 20@ = read_float_from_ini_file 8@v section 13@v key 4@v
             then
@@ -70,9 +70,7 @@ cleo_return 0
     else
         if
             0@ == -1 // use editor.ini
-        then
-            string_format 4@v = string_format "%s" 4@ // copy param name into local variables
-             
+        then             
             set_current_directory 0 // game root
             if
                 0AF2: 20@ = read_float_from_ini_file "cleo/dyom_shaders/editor.ini" section "EDITOR_SHADERS" key 4@v
