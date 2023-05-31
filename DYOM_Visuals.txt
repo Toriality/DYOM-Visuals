@@ -60,7 +60,7 @@ script_name "DVISUALS"
 
 
 :DYOM_INIT
-    previewMode = 0
+    previewMode = false
     lastSelected = 0
     
     SHADERS_INIT()
@@ -91,6 +91,9 @@ return
 
 
 :DYOM_RUN
+    0AD1: show_formatted_text_highpriority "%d" time 2000 previewMode
+
+
     SHADERS_EDITOR_UPDATE() // handle keys etc.
 
     cleo_call @SHADERS_CONSTANTS_UPDATE args 0
@@ -128,13 +131,14 @@ return
                 wait 0
             end
             
-            previewMode = 1 - previewMode
             if
                 previewMode == true
             then
-                0ACE: show_formatted_text_box "Objective effects: ~g~~h~ON~s~"
-            else
+                previewMode = false
                 0ACE: show_formatted_text_box "Objective effects: ~r~~h~OFF~s~"    
+            else
+                previewMode = true
+                0ACE: show_formatted_text_box "Objective effects: ~g~~h~ON~s~"
             end
             
             0@ = true // update needed
