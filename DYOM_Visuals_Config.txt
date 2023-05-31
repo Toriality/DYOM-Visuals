@@ -57,16 +57,19 @@ cleo_return 0
         set_current_directory 1 // user files
         
         // parameters persists between objectives, so process all until requested objective
-        for 12@ = 1 to 0@
+        while 0@ > 0
             // section name
-            string_format 13@v = string_format "OBJECTIVE_%d" 12@
+            string_format 13@v = string_format "OBJECTIVE_%d" 0@
             
             0AD1: show_formatted_text_highpriority "read param %s %s %s" time 0 8@v 13@v 4@v
             if
                 0AF2: 20@ = read_float_from_ini_file 8@v section 13@v key 4@v
             then
                 0087: 1@ = 20@
-            end     
+                break // last change of this param found
+            end
+            
+            0@ -= 1     
         end
     else
         if
