@@ -59,6 +59,7 @@ script_name "DVISUALS"
 {$INCLUDE DYOM_Addon_Base.txt}
 {$INCLUDE DYOM_Visuals_Config.txt}
 {$INCLUDE DYOM_Visuals_Shaders.txt} 
+{$INCLUDE DYOM_Visuals_Effects.txt}
 
 
 :DYOM_INIT
@@ -68,6 +69,7 @@ script_name "DVISUALS"
     
     SHADERS_INIT()
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 // reset defaults
 return                      
  
      
@@ -81,7 +83,6 @@ return
 
 
 :DYOM_MISSION_ENDED
-    // TODO: end effects?
 return
 
 
@@ -90,6 +91,7 @@ return
     
     0@ += 1 // 1-based objective index
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ // current objective
+    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 0@ // current objective
     // TODO: update effects
 return
 
@@ -100,7 +102,6 @@ return
 
 :DYOM_RUN
     SHADERS_EDITOR_UPDATE() // handle keys etc.
-
     cleo_call @SHADERS_CONSTANTS_UPDATE args 0
     cleo_call @SHADERS_DRAW args 1 hShader 
 return
@@ -201,6 +202,7 @@ return
         end
                     
         cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@
+        cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 // reset effects
     end
 return
 

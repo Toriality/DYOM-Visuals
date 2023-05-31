@@ -1,0 +1,177 @@
+
+jump @DYOM_VISUALS_EFFECTS_END
+
+// load params from config or apply defaults
+// arg 0 - objective idx, -1 to reset defaults 
+:EFFECTS_CONFIG_UPDATE_PARAMS
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'speed'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 70.0 'fov'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceCinematic'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceBumper'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceWalking'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceAiming'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'drunkenness'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'darkness'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadeout'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadein'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'shake'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'siteorkcet'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'radar'
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'hud'
+cleo_return 0
+
+// arg 0 - objective idx, -1 to reset defaults 
+// arg 1 - (float) default parameter value
+// arg 2 - parameter name
+:EFFECTS_CONFIG_READ_PARAM
+    cleo_call @CONFIG_READ_PARAM args 3 0@ 1@ 2@ result 1@
+    
+    string_format 3@v = string_format "%s" 2@ // copy param name into local variables
+    
+    if
+        3@v == "speed"
+    then
+        015D: set_gamespeed 1@
+    end
+    
+    if
+        3@v == "fov"
+    then
+        0922: set_camera_zoom_from 1@ to 1@ timelimit 1000 smooth_transition 0
+        0931: lock_camera_zoom 1
+    end
+    
+    if
+        3@v == "forceCinematic"
+    then
+        0092: 1@ = float 1@ to_integer
+        0006: forceCinematic = 1@
+        093D: lock_camera_on_cinematic_view 1@
+    end
+    
+    if
+        3@v == "forceBumper"
+    then
+        0092: 1@ = float 1@ to_integer
+        0006: forceBumper = 1@
+    end
+    
+    if
+        3@v == "forceWalking"
+    then 
+        0092: 1@ = float 1@ to_integer
+        0006: forceWalking = 1@
+        06AF: set_player $PLAYER_CHAR sprint_mode 1@ // 1 to disable 0 to enable sprint
+        1@ = 1 - 1@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+        0901: enable_player $PLAYER_CHAR jump_key 1@
+        082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1@
+    end
+    
+    if
+        3@v == "forceAiming"
+    then
+        0092: 1@ = float 1@ to_integer
+        0085: forceAiming = 1@ // (int)
+        1@ = 1 - 1@ // if 8@ = 1 then 0, if 8@ = 0, then 1
+        0992: set_player $PLAYER_CHAR weapons_scrollable 1@
+        
+    end
+    
+    if
+        3@v == "drunkenness"
+    then
+        0092: 1@ = float 1@ to_integer
+        052C: set_player $PLAYER_CHAR drunk_visuals 1@
+    end
+    
+    if
+        3@v == "darkness"
+    then
+        0092: 1@ = float 1@ to_integer
+        0924: enable_screen_darkness 1@ with_value -1
+    end
+    
+    if
+        3@v == "fadeout"
+    then
+        0092: 1@ = float 1@ to_integer
+        016A: fade 0 time 1@
+    end
+    
+    if
+        3@v == "fadein"
+    then
+        0092: 1@ = float 1@ to_integer
+        016A: fade 1 time 1@
+    end
+    
+    if
+        3@v == "shake"
+    then
+        0092: 1@ = float 1@ to_integer
+        0003: shake_camera 1@
+    end
+    
+    if
+        3@v == "siterocket"
+    then
+        0092: 1@ = float 1@ to_integer
+        09A3: show_siterocket_on_bumper_camera 1@
+    end
+    
+    if
+        3@v == "radar"
+    then
+        0092: 1@ = float 1@ to_integer
+        0581: enable_radar 1@
+    end
+    
+    if
+        3@v == "hud"
+    then
+        0092: 1@ = float 1@ to_integer
+        0826: enable_hud 1@
+        09B9: show_entered_car_name 1@
+        09BA: show_entered_zone_name 1@
+    end
+           
+cleo_return 0
+
+
+
+/*
+:FORCE_AIMING
+    if
+        forceAiming == 1
+    then
+    0ACE: show_formatted_text_box "This is %.4X opcode" 0x0ACE
+    
+        cleo_call @FORCE_KEYPRESS 1 args 12     
+    end
+    return
+    
+    :FORCE_WALKING
+    if
+        forceWalking == 1
+    then
+        cleo_call @FORCE_KEYPRESS 1 args 42
+    end
+return
+
+
+:FORCE_BUMPER
+    if
+        forceBumper == 1
+    then
+        09AD: set_vehicle_camera_mode 0
+    end
+return
+
+:FORCE_KEYPRESS
+    0@ += 0xB734D0 // High Priority Controls
+    0A8C: write_memory 0@ size 1 value 255 virtual_protect 0
+cleo_return 0
+*/
+
+:DYOM_VISUALS_EFFECTS_END
+
