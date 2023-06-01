@@ -4,21 +4,27 @@ jump @DYOM_VISUALS_EFFECTS_END
 // load params from config or apply defaults
 // arg 0 - objective idx, -1 to reset defaults 
 :EFFECTS_CONFIG_UPDATE_PARAMS
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'speed'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 70.0 'fov'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceCinematic'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceBumper'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceWalking'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceAiming'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'drunkenness'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'darkness'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadeout'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadein'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'shake'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'siteorkcet'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'radar'
-    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'hud'
-cleo_return 0
+    //10@ is there just because cleo_call needs to store result in some variable otherwise it will crash
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'speed' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 70.0 'fov' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceCinematic' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceBumper' result 1@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceWalking' reuslt 2@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceAiming' result 3@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'drunkenness' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'darkness' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadeout' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'fadein' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'shake' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'siteorkcet' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'radar' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'hud' result 10@
+    
+    0@ = 0
+    005A: 0@ += 1@
+    005A: 0@ += 2@
+    005A: 0@ += 3@
+cleo_return 1 0@
 
 // arg 0 - objective idx, -1 to reset defaults 
 // arg 1 - (float) default parameter value
@@ -27,6 +33,8 @@ cleo_return 0
     cleo_call @CONFIG_READ_PARAM args 3 0@ 1@ 2@ result 1@
     
     string_format 3@v = string_format "%s" 2@ // copy param name into local variables
+    
+    0@ = 0
     
     if
         3@v == "speed"
@@ -45,7 +53,6 @@ cleo_return 0
         3@v == "forceCinematic"
     then
         0092: 1@ = float 1@ to_integer
-        0006: forceCinematic = 1@
         093D: lock_camera_on_cinematic_view 1@
     end
     
@@ -53,28 +60,41 @@ cleo_return 0
         3@v == "forceBumper"
     then
         0092: 1@ = float 1@ to_integer
-        0006: forceBumper = 1@
+        if
+            0039: 1@ == 1
+        then
+            0@ = 1
+        end
     end
     
     if
         3@v == "forceWalking"
     then 
         0092: 1@ = float 1@ to_integer
-        0006: forceWalking = 1@
+                if
+            0039: 1@ == 1
+        then
+            0@ = 2
+        end
         06AF: set_player $PLAYER_CHAR sprint_mode 1@ // 1 to disable 0 to enable sprint
         1@ = 1 - 1@ // if 8@ = 1 then 0, if 8@ = 0, then 1
         0901: enable_player $PLAYER_CHAR jump_key 1@
         082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1@
+
     end
     
     if
         3@v == "forceAiming"
     then
         0092: 1@ = float 1@ to_integer
-        0085: forceAiming = 1@ // (int)
+                if
+            0039: 1@ == 1
+        then
+            0@ = 4
+        end  
         1@ = 1 - 1@ // if 8@ = 1 then 0, if 8@ = 0, then 1
         0992: set_player $PLAYER_CHAR weapons_scrollable 1@
-        
+  
     end
     
     if
@@ -135,7 +155,7 @@ cleo_return 0
         09BA: show_entered_zone_name 1@
     end
            
-cleo_return 0
+cleo_return 1 0@
 
 
 

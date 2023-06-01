@@ -28,18 +28,18 @@
 
 {$CLEO .cs}
 {$USE ini}
+{$USE bitwise}
 {$NOSOURCE} // do not make script bigger
 
 
 const
     hShader = 10@
-    forceAiming = 11@
-    forceWalking = 12@
-    forceBumper = 13@
-    forceCinematic = 14@
-    previewMode = 15@
-    lastSelected = 16@
-    wasOnMission = 17@
+    forceBumper = 11@   // bitwise 1
+    forceWalking = 12@  // bitwise 2
+    forceAiming = 13@   // bitwise 4
+    previewMode = 14@
+    lastSelected = 15@
+    wasOnMission = 16@
 end
 
 var
@@ -47,7 +47,6 @@ var
     forceAiming: int
     forceWalking: int
     forceBumper: int
-    forceCinematic: int
     previewMode: int
     lastSelected: int
     wasOnMission: int
@@ -69,7 +68,6 @@ script_name "DVISUALS"
     
     SHADERS_INIT()
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
-    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 // reset defaults
 return                      
  
      
@@ -91,7 +89,7 @@ return
     
     0@ += 1 // 1-based objective index
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ // current objective
-    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 0@ // current objective
+    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 0@ result 0@// current objective
     // TODO: update effects
 return
 
@@ -103,14 +101,20 @@ return
 :DYOM_RUN
     SHADERS_EDITOR_UPDATE() // handle keys etc.
     cleo_call @SHADERS_CONSTANTS_UPDATE args 0
-    cleo_call @SHADERS_DRAW args 1 hShader 
+    cleo_call @SHADERS_DRAW args 1 hShader
+    
+    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 result 0@
+    0B10: forceBumper = 0@ AND 0x01
+    0B10: forceWalking = 0@ AND 0x02
+    0B10: forceAiming = 0@ AND 0x04
+    0AD1: show_formatted_text_highpriority "0@: %d aiming: %d walking: %d bumper: %d" time 2000 0@ forceAiming forceWalking forceBumper
 return
 
 
 :DYOM_MISSION_RUN
-    //FORCE_AIMING()
-    //FORCE_WALKING()
-    //FORCE_BUMPER()
+    //cleo_call @FORCE_AIMING 1 forceAiming
+    //cleo_call @FORCE_WALKING 1 forceWalking
+    //cleo_call @FORCE_BUMPER 1 forceBumper
 return
 
 
@@ -202,7 +206,7 @@ return
         end
                     
         cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@
-        cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 // reset effects
+        cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 result 0@ // reset effects
     end
 return
 
