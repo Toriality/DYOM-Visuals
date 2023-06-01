@@ -5,6 +5,8 @@ jump @DYOM_VISUALS_EFFECTS_END
 // arg 0 - objective idx, -1 to reset defaults 
 :EFFECTS_CONFIG_UPDATE_PARAMS
     //10@ is there just because cleo_call needs to store result in some variable otherwise it will crash
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'nightVision' result 10@
+    cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'thermalVision' result 10@
     cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 1.0 'speed' result 10@
     cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 70.0 'fov' result 10@
     cleo_call @EFFECTS_CONFIG_READ_PARAM args 3 0@ 0.0 'forceCinematic' result 10@
@@ -35,6 +37,20 @@ cleo_return 1 0@
     string_format 3@v = string_format "%s" 2@ // copy param name into local variables
     
     0@ = 0
+    
+    if
+        3@v == "nightVision"
+    then
+        0092: 1@ = float 1@ to_integer
+        08B1: enable_night_vision 1@
+    end
+    
+    if
+        3@v == "thermalVision"
+    then
+        0092: 1@ = float 1@ to_integer
+        08B2: enable_thermal_vision 1@
+    end
     
     if
         3@v == "speed"
@@ -71,7 +87,7 @@ cleo_return 1 0@
         3@v == "forceWalking"
     then 
         0092: 1@ = float 1@ to_integer
-                if
+        if
             0039: 1@ == 1
         then
             0@ = 2
@@ -87,7 +103,7 @@ cleo_return 1 0@
         3@v == "forceAiming"
     then
         0092: 1@ = float 1@ to_integer
-                if
+        if
             0039: 1@ == 1
         then
             0@ = 4
@@ -159,39 +175,35 @@ cleo_return 1 0@
 
 
 
-/*
 :FORCE_AIMING
     if
-        forceAiming == 1
+        0@ <> 0
     then
-    0ACE: show_formatted_text_box "This is %.4X opcode" 0x0ACE
-    
         cleo_call @FORCE_KEYPRESS 1 args 12     
     end
-    return
+cleo_return 0
     
-    :FORCE_WALKING
+:FORCE_WALKING
     if
-        forceWalking == 1
+        0@ <> 0
     then
         cleo_call @FORCE_KEYPRESS 1 args 42
     end
-return
+cleo_return 0
 
 
 :FORCE_BUMPER
     if
-        forceBumper == 1
+        0@ <> 0
     then
         09AD: set_vehicle_camera_mode 0
     end
-return
+cleo_return 0
 
 :FORCE_KEYPRESS
     0@ += 0xB734D0 // High Priority Controls
     0A8C: write_memory 0@ size 1 value 255 virtual_protect 0
 cleo_return 0
-*/
 
 :DYOM_VISUALS_EFFECTS_END
 
