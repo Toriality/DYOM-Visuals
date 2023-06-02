@@ -34,17 +34,17 @@ cleo_return 4 0@ 1@ 2@ 3@
 cleo_return 0
 
 
-// arg 0 - objective idx, -1 use editor.ini, -2 just set default param
-// arg 1 - (float) default parameter value 
-// arg 2 - parameter name
+// arg 0 - objective idx, -1 use editor.ini, -2 just get default param
+// arg 1 - (float) default parameter value
+// arg 2 - (bool) persistence. Params set in previous objectives persists during oncoming ones 
+// arg 3 - parameter name
 // return - (float) read parameter value
 :CONFIG_READ_PARAM
     // param name
-    string_format 4@v = string_format "%s" 2@
+    string_format 4@v = string_format "%s" 3@
         
-    // Check if editor mode or play mode
     if
-        0@ >= 0
+        0@ >= 0 // mission's config file
     then
         if
             not cleo_call @CONFIG_EXISTS args 0
@@ -53,23 +53,28 @@ cleo_return 0
         end
         
         // file name
-        cleo_call @CONFIG_GET_FILEPATH args 0 result 8@ 9@ 10@ 11@
+        cleo_call @CONFIG_GET_FILEPATH args 0 result 9@ 10@ 11@ 12@
         set_current_directory 1 // user files
         
-        // parameters persists between objectives, so process all until requested objective
+        // parameters persists between objectives, so find last modification
         while 0@ > 0
             // section name
             string_format 13@v = string_format "OBJECTIVE_%d" 0@
             
-            0AD1: show_formatted_text_highpriority "read param %s %s %s" time 0 8@v 13@v 4@v
             if
-                0AF2: 20@ = read_float_from_ini_file 8@v section 13@v key 4@v
+                0AF2: 20@ = read_float_from_ini_file 9@v section 13@v key 4@v
             then
                 0087: 1@ = 20@
                 break // last change of this param found
             end
             
-            0@ -= 1     
+            0@ -= 1
+            
+            if
+                2@ == false // no persistence
+            then
+                break
+            end     
         end
     else
         if

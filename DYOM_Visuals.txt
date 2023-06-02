@@ -34,9 +34,9 @@
 
 const
     hShader = 10@
-    forceBumper = 11@   // bitwise 1
-    forceWalking = 12@  // bitwise 2
-    forceAiming = 13@   // bitwise 4
+    forceBumper = 11@
+    forceWalking = 12@
+    forceAiming = 13@
     previewMode = 14@
     lastSelected = 15@
     wasOnMission = 16@
@@ -89,10 +89,10 @@ return
     
     0@ += 1 // 1-based objective index
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ // current objective
-    cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 0@ result 0@// current objective
-    0B10: forceBumper = 0@ AND 0x01
-    0B10: forceWalking = 0@ AND 0x02
-    0B10: forceAiming = 0@ AND 0x04
+    
+    // current objective in 0@
+    EFFECTS_CONFIG_UPDATE_PARAMS()
+
 return
 
 
@@ -202,6 +202,9 @@ return
         end
                     
         cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@
-        cleo_call @EFFECTS_CONFIG_UPDATE_PARAMS 1 -1 result 0@ // reset effects
+        
+        // disable all effects
+        0@ = -1
+        EFFECTS_CONFIG_UPDATE_PARAMS()
     end
 return

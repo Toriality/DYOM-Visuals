@@ -93,10 +93,15 @@ cleo_return 0
 // arg 2 - (float) default parameter value 
 // arg 3 - parameter name
 :SHADERS_CONFIG_READ_PARAM
-    cleo_call @CONFIG_READ_PARAM args 3 1@ 2@ 3@ result 2@
+    0AC8: 4@ = allocate_memory_size 16
+    string_format 4@ = string_format "%s" 3@ // copy param name into memory with static address
+
+    cleo_call @CONFIG_READ_PARAM args 4 1@ 2@ true 4@ result 2@
     
-    string_format 4@v = string_format "%s" 3@ // copy param name into local variables
-    shader.SetFloat(0@, 4@v, 2@)  
+    string_format 5@v = string_format "%s" 4@ // copy param name into local variables
+    0AC9: free_allocated_memory 4@
+    
+    shader.SetFloat(0@, 5@v, 2@)  
  cleo_return 0
 
 
