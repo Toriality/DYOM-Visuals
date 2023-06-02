@@ -60,9 +60,6 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     float4 color = tex2D(screenSampler, uv);
     float depth = tex2D(depthSampler, uv).x;
 
-    // Depth shaders
-    color = PS_Fog(color, depth);
-    color = PS_Desolate(color, depth);
 
     // Screen shaders
     color = PS_Glitch(color, uv);
@@ -77,10 +74,16 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     color = PS_Invert(color);   
     color = PS_OneColor(color);
     color.rgb = PS_Interlaces(color, uv);
-    color = PS_Vignette(color, uv);
     //color = PS_fromGray(color);
     //color = PS_toGray(color);
     
+    // Depth shaders
+    color = PS_Fog(color, depth);
+    color = PS_Desolate(color, depth);
+
+    // Vignette
+    color = PS_Vignette(color, uv);
+
     return color;
 }
 

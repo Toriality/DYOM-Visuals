@@ -107,6 +107,13 @@ cleo_return 0
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteBlue'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteAlpha'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteMixing'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'fogSize'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'fogRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'fogGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'fogBlue'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.1 'fogStart'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.6 'fogEnd'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'desolate'
 cleo_return 0
 
 
