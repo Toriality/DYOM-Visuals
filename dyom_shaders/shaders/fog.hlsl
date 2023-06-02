@@ -15,9 +15,9 @@ float4 PS_Fog(float4 color, float depth)
     float3 fogColor = float3(fogRed, fogGreen, fogBlue);
     float fogFactor = saturate((depth - fogStart) / (fogEnd - fogStart));
 	fogFactor = sqrt(fogFactor);
-	//fogFactor = pow(fogFactor, 0.25);
+	fogFactor = smoothstep(0, 1, fogFactor);
 	
-	fogFactor = round(fogFactor * 10.0) / 10.0;
+	//fogFactor = round(fogFactor * 10.0) / 10.0;
 
     color.rgb = lerp(color.rgb, fogColor.rgb, fogFactor * fogAlpha);
 		
