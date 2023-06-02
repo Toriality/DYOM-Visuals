@@ -105,7 +105,7 @@ return
 
 :DYOM_RUN // editor and mission
     SHADERS_EDITOR_UPDATE() // handle keys etc.
-    cleo_call @SHADERS_CONSTANTS_UPDATE args 0
+    cleo_call @SHADERS_CONSTANTS_UPDATE args 1 hShader
     cleo_call @SHADERS_DRAW args 1 hShader
 return
 

@@ -27,7 +27,7 @@ float4 PS_Raindrops(float4 color, float2 uv)
         float4 d = float4(noise(v * 200.0), noise(v));
         
         // Drop shape and fading
-        float t = (s.x + s.y) * max(0.0, 1.0 - frac(time * (d.b + 0.1) + d.g) * 2.0);
+        float t = (s.x + s.y) * max(0.0, 1.0 - frac(timeMission * (d.b + 0.1) + d.g) * 2.0);
         
         // d.r -> only x% of drops are kept on, with x depending on the size of drops
         if (d.r < (5.0 - r) * 0.08 && t > 0.5)

@@ -17,29 +17,33 @@ extern sampler2D depthSampler = sampler_state
 
 float screenWidth = 1.0;
 float screenHeight = 1.0;
-float time = 12.08912;
+float timeMission = 1.0;
+float timeObjective = 1.0;
+float timeLeft = 1.0;
+float drawDistance = 1.0;
+
 
 #include "_funcs.hlsl"
+#include "bars.hlsl"
 #include "brightness.hlsl"
 #include "contrast.hlsl"
-#include "saturation.hlsl"
-#include "tint.hlsl"
+#include "desolate.hlsl"
+#include "distort.hlsl"
+#include "flip.hlsl"
+#include "fog.hlsl"
+#include "glitch.hlsl"
 #include "hue.hlsl"
-#include "levels.hlsl"
-#include "vignette.hlsl"
-#include "raindrops.hlsl"
+#include "interlaces.hlsl"
 #include "invert.hlsl"
+#include "levels.hlsl"
 #include "onecolor.hlsl"
 #include "quantize.hlsl"
-#include "zoom.hlsl"
-#include "glitch.hlsl"
-#include "bars.hlsl"
-#include "flip.hlsl"
-#include "distort.hlsl"
-#include "interlaces.hlsl"
-#include "fog.hlsl"
-#include "desolate.hlsl"
+#include "raindrops.hlsl"
+#include "saturation.hlsl"
+#include "tint.hlsl"
 #include "transitions.hlsl"
+#include "vignette.hlsl"
+#include "zoom.hlsl"
 
 float4 PS_main(float2 uv : TEXCOORD): COLOR
 {
@@ -74,8 +78,8 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     color = PS_OneColor(color);
     color.rgb = PS_Interlaces(color, uv);
     color = PS_Vignette(color, uv);
-    color = PS_fromGray(color);
-    color = PS_toGray(color);
+    //color = PS_fromGray(color);
+    //color = PS_toGray(color);
     
     return color;
 }
