@@ -7,7 +7,7 @@ float4 PS_toGray(float4 color)
 
     float3 hsl = RGBtoHSL(color.rgb);
 
-    hsl.y *= 1 - clamp(time / toGray, 0, 1);
+    hsl.y *= 1 - clamp(timeMission / toGray, 0, 1);
 
     float3 rgb = HSLtoRGB(hsl);
 
@@ -20,7 +20,7 @@ float4 PS_fromGray(float4 color)
 
     float3 hsl = RGBtoHSL(color.rgb);
 
-    hsl.y *= 0 + clamp(time / fromGray, 0, 1);
+    hsl.y *= 0 + clamp(timeMission / fromGray, 0, 1);
 
     float3 rgb = HSLtoRGB(hsl);
 

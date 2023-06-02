@@ -1,2 +1,4 @@
 /cleo_text
 /cleo_saves
+*.cs
+*.bak
