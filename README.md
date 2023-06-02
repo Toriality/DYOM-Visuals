@@ -147,6 +147,30 @@ All the visuals in the modification are divided into three distinct categories:
       <td>0</td>
       <td>Force cinematic camera on vehicles.</td>
     </tr>
+    <tr>
+       <td>FOV</td>
+       <td>Any float</td>
+       <td>70.0</td>
+       <td>Adjust Field Of View</td>
+     </tr>
+    <tr>
+       <td>Speed</td>
+       <td>Any float</td>
+       <td>1.0</td>
+       <td>Adjust game speed</td>
+     </tr>
+    <tr>
+       <td>ThermalVision</td>
+       <td>0 or 1</td>
+       <td>0</td>
+       <td>Toggles thermal vision</td>
+     </tr>
+     <tr>
+        <td>NightVision</td>
+        <td>0 or 1</td>
+        <td>0</td>
+        <td>Toggles night vision</td>
+     </tr>
   </tbody>
 </table>
 
@@ -371,6 +395,48 @@ All the visuals in the modification are divided into three distinct categories:
       <td>Any float</td>
       <td>0.0</td>
       <td>Aspect ratio of the vignette. 1.0 for perfect square/circle</td>
+    </tr>
+    <tr>
+      <td>FogSize</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Size of fog</td>
+    </tr>
+    <tr>
+      <td>FogRed</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Red color for fog</td>
+    </tr>
+     <tr>
+      <td>FogGreen</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Green color for fog</td>
+    </tr>
+     <tr>
+      <td>FogBlue</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Blue color for fog</td>
+    </tr>
+    <tr>
+      <td>FogStart</td>
+      <td>Any float</td>
+      <td>0.1</td>
+      <td>Start range of fog</td>
+    </tr>
+   <tr>
+      <td>FogEnd</td>
+      <td>Any float</td>
+      <td>0.6</td>
+      <td>End range of fog</td>
+    </tr>
+        <tr>
+      <td>Desolate</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Artistical effect to make all the player's surrouding gray-scale except things near him</td>
     </tr>
   </tbody>
 </table>
