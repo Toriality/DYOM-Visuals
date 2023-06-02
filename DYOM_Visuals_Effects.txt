@@ -3,9 +3,8 @@ jump @DYOM_VISUALS_EFFECTS_END
 
 
 // load params from config or apply defaults
-// arg 0 - objective idx, -1 to reset defaults 
+// arg 0@ - objective idx, -2 to reset defaults 
 :EFFECTS_CONFIG_UPDATE_PARAMS
-
     cleo_call @CONFIG_READ_PARAM args 4 0@ 0.0 true 'nightVision' result 1@
     0092: 1@ = float 1@ to_integer
     08B1: enable_night_vision 1@
@@ -84,40 +83,29 @@ jump @DYOM_VISUALS_EFFECTS_END
     0826: enable_hud 1@
     09B9: show_entered_car_name 1@
     09BA: show_entered_zone_name 1@   
-
 return
 
 
-:FORCE_AIMING
+// once peer frame effects update
+:EFFECTS_PROCESS
     if
-        0@ <> 0
+        forceAiming == true
     then
-        cleo_call @FORCE_KEYPRESS 1 args 12     
+        cleo_call @FORCE_KEYPRESS 1 args 12    
     end
-cleo_return 0
-
     
-:FORCE_WALKING
     if
-        0@ <> 0
+        forceWalking == true
     then
         cleo_call @FORCE_KEYPRESS 1 args 42
     end
     
-    /*06AF: set_player $PLAYER_CHAR sprint_mode 1@ // 1 to disable 0 to enable sprint
-    1@ = 1 - 1@ // if 8@ = 1 then 0, if 8@ = 0, then 1
-    0901: enable_player $PLAYER_CHAR jump_key 1@
-    082A: set_player $PLAYER_CHAR able_to_use_crouch_button 1@*/
-cleo_return 0
-
-
-:FORCE_BUMPER
     if
-        0@ <> 0
+        forceBumper == true
     then
         09AD: set_vehicle_camera_mode 0
-    end
-cleo_return 0
+    end    
+return
 
 
 :FORCE_KEYPRESS

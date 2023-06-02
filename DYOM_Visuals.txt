@@ -39,7 +39,11 @@ const
     forceAiming = 13@
     previewMode = 14@
     lastSelected = 15@
-    wasOnMission = 16@
+    
+    previewMode_off = 0
+    previewMode_editor = 1
+    previewMode_objective = 2
+    previewMode_max = 2
 end
 
 var
@@ -49,7 +53,6 @@ var
     forceBumper: int
     previewMode: int
     lastSelected: int
-    wasOnMission: int
 end
 
 script_name "DVISUALS"
@@ -62,9 +65,8 @@ script_name "DVISUALS"
 
 
 :DYOM_INIT
-    previewMode = -1 // force update first time
-    lastSelected = 0
-    wasOnMission = 0
+    previewMode = previewMode_off
+    lastSelected = -1
     
     SHADERS_INIT()
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
@@ -72,15 +74,16 @@ return
  
      
 :DYOM_MISSION_STARTED
-    // Force shaders to load mission's first objective shaders when starting the mission,
-    // avoiding preview mode to keep the editor's selected objective shaders
-    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 1 // Objective ID 1
-    wasOnMission = 1
     TimerA = 0 // mission time
 return
 
 
 :DYOM_MISSION_ENDED
+    previewMode = previewMode_off
+    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+    
+    0@ = -2 // restore defaults
+    EFFECTS_CONFIG_UPDATE_PARAMS()
 return
 
 
@@ -92,15 +95,15 @@ return
     
     // current objective in 0@
     EFFECTS_CONFIG_UPDATE_PARAMS()
-
 return
 
 
 :DYOM_OBJECTIVE_ENDED
+    015D: set_gamespeed 1.0 // clean up speed changes
 return
 
 
-:DYOM_RUN
+:DYOM_RUN // editor and mission
     SHADERS_EDITOR_UPDATE() // handle keys etc.
     cleo_call @SHADERS_CONSTANTS_UPDATE args 0
     cleo_call @SHADERS_DRAW args 1 hShader
@@ -108,103 +111,88 @@ return
 
 
 :DYOM_MISSION_RUN
-    cleo_call @FORCE_AIMING 1 forceAiming
-    cleo_call @FORCE_WALKING 1 forceWalking
-    cleo_call @FORCE_BUMPER 1 forceBumper
+    EFFECTS_PROCESS()
 return
 
 
 :SHADERS_EDITOR_UPDATE
-    0@ = false // update needed
-
     if
         $ONMISSION == 0 // editor mode
     then
-        // selected objective changed    
-        if and 
-            previewMode == true
-            87D6: lastSelected <> $15617
-        then
-            008B: lastSelected = $15617
-            0@ = true // update needed
-        end
-        
-        // Should reset shaders after mission ends
-        if
-            wasOnMission == 1
-        then
-            wasOnMission = 0
-            0@ = true // update needed
-        end
-        
-        // toggle objective shaders preview key
-        if or
-            is_key_pressed 0x7A // F11
-            previewMode == -1 // first time
-        then
-            while is_key_pressed 0x7A // wait for key release
-                wait 0
-            end
-            
-            if
-                previewMode == false
-            then
-                previewMode = true
-                0ACE: show_formatted_text_box "Objective effects: ~g~~h~ON~s~"
-            else
-                previewMode = false
-                0ACE: show_formatted_text_box "Objective effects: ~r~~h~OFF~s~"  
-            end
-            
-            0@ = true // update needed
-        end
-        
-        // reload shaders key
         if
             is_key_pressed 0x7B // F12
         then
+            if
+                is_key_pressed 0x11 // CTRL
+            then
+                SHADERS_INIT() // rebuild shaders
+                
+                while is_key_pressed 0x7B // wait for key release
+                    wait 0
+                end
+                
+                return
+            end
+        
             while is_key_pressed 0x7B // wait for key release
                 wait 0
             end
             
-            0@ = true // update needed
+            previewMode += 1
+            if
+                previewMode > previewMode_max
+            then
+                previewMode = previewmode_off    
+            end
+            
+            if
+                previewMode == previewmode_off
+            then
+                0ACE: show_formatted_text_box "Effects: ~r~~h~OFF~s~"
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+            end
+            
+            if
+                previewMode == previewmode_editor
+            then
+                0ACE: show_formatted_text_box "Effects: ~y~~h~Editor~s~"
+            
+                set_current_directory 0 // game root
+                if
+                    does_file_exist "cleo/dyom_shaders/editor.ini"
+                then
+                    0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -1 // editor.ini
+                else
+                    0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // restore defaults    
+                end
+            end
+            
+            if
+                previewMode == previewmode_objective
+            then
+                0ACE: show_formatted_text_box "Effects: ~g~~h~Objective~s~"
+                lastSelected = -1 // trigger update
+            end
         end
-    end
-    
-    
-    if 
-        0@ == true // update needed
-    then        
-        if 
-            previewMode == true
+        
+        if and
+            previewMode == previewmode_objective
+            87D6: lastSelected <> $15617 // editor selected objective changed
         then
+            008B: lastSelected = $15617
+            
             if
                 cleo_call @CONFIG_EXISTS args 0
             then
-                0085: 0@ = lastSelected // editor selected objective
-                0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 0@
+                0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 lastSelected
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected
             else
-                0@ = -2 // restore defaults
                 cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 3@
                 0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ Visuals file for this mission not found!~n~Please create %s" time 10000 1@v
-            end
-        else
-            set_current_directory 0 // game root
-            if
-                does_file_exist "cleo/dyom_shaders/editor.ini"
-            then
-                0@ = -1 // use editor.ini
-                0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
-            else
-                0@ = -2 // restore defaults
-                0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000    
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // restore defaults  
             end
         end
-                    
-        cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@
-        
-        // disable all effects
-        0@ = -1
-        EFFECTS_CONFIG_UPDATE_PARAMS()
     end
 return
