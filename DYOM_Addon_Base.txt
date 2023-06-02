@@ -47,9 +47,8 @@ while true
     then
         // on mission changed
         if
-            003C: $ONMISSION == 0@ // _OnMission
+            803C: $ONMISSION <> 0@ // _OnMission
         then
-        else
             0@ = _OnMission
             008B: 1@ = $ONMISSION // int
             VAR_SET()
@@ -88,16 +87,20 @@ while true
                     DYOM_OBJECTIVE_ENDED()
                 end
                 
-                0@ = _ObjectiveIndex
-                008B: 1@ = dyom_objective_index // int
-                VAR_SET()
-                
-                0@ = _ObjectiveStartTime
-                01BD: 1@ = current_time_in_ms
-                VAR_SET()
-                
-                008B: 0@ = dyom_objective_index // int
-                DYOM_OBJECTIVE_STARTED()
+                if
+                    $ONMISSION == true // still on mission
+                then
+                    0@ = _ObjectiveIndex
+                    008B: 1@ = dyom_objective_index // int
+                    VAR_SET()
+                    
+                    0@ = _ObjectiveStartTime
+                    01BD: 1@ = current_time_in_ms
+                    VAR_SET()
+                    
+                    008B: 0@ = dyom_objective_index // int
+                    DYOM_OBJECTIVE_STARTED()
+                end
             end
             
             if
