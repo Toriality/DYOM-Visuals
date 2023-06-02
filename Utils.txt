@@ -8,6 +8,21 @@
 jump @UTILS_END // do not execute any code from this file yet
 
 
+// linear interpolate betweet two values
+// arg 0 - (float) start value
+// arg 1 - (float) end value
+// arg 2 - (float) progress (0.0 - 1.0)
+// return - (float) interpolated value
+:FLOAT_LERP
+    3@ = 1.0
+    0063: 3@ -= 2@ // inverted progress
+    
+    006B: 0@ *= 3@
+    006B: 1@ *= 2@
+    
+    005B: 0@ += 1@
+cleo_return 1 0@
+
 
 // Check if string starts with given prefix (case sensitive)
 // arg 0@ - prefix text
