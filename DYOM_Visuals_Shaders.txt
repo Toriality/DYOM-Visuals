@@ -100,8 +100,13 @@ cleo_return 0
         
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.5 'vignetteRound' 
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 2.0 'vignetteStart'
-    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteWidth'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 3.0 'vignetteWidth'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteAspect'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteRed'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteGreen'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteBlue'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 1.0 'vignetteAlpha'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 4 0@ 1@ 0.0 'vignetteMixing'
 cleo_return 0
 
 
