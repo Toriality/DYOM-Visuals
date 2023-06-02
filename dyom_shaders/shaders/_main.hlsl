@@ -4,15 +4,17 @@ shared texture depthscreen : DEPTH_TEX;
 extern sampler2D screenSampler = sampler_state
 {
     Texture = <screen>;
-	AddressU = MIRROR;
-	AddressV = MIRROR;
+	Filter = MIN_MAG_MIP_LINEAR;
+	//AddressU = MIRROR;
+	//AddressV = MIRROR;
 };
 
 extern sampler2D depthSampler = sampler_state
 {
     Texture = <depthscreen>;
-	AddressU = MIRROR;
-	AddressV = MIRROR;
+	Filter = MIN_MAG_MIP_LINEAR;
+	//AddressU = MIRROR;
+	//AddressV = MIRROR;
 };
 
 float screenWidth = 1.0;
@@ -34,7 +36,6 @@ float drawDistance = 1.0;
 #include "glitch.hlsl"
 #include "hue.hlsl"
 #include "interlaces.hlsl"
-#include "invert.hlsl"
 #include "levels.hlsl"
 #include "onecolor.hlsl"
 #include "quantize.hlsl"
@@ -70,8 +71,7 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     color = PS_Tint(color);
     color.rgb = PS_Hue(color.rgb);
     color.rgb = PS_Levels(color.rgb);   
-    color = PS_Quantize(color);
-    color = PS_Invert(color);   
+    color = PS_Quantize(color); 
     color = PS_OneColor(color);
     color.rgb = PS_Interlaces(color, uv);
     //color = PS_fromGray(color);
