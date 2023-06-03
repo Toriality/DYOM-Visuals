@@ -1,4 +1,4 @@
-int interlaces = 0;
+float interlaces = 0;
 
 float4 PS_Interlaces(float4 color, float2 uv) {
     if (frac(uv.y * interlaces) > 0.5) {

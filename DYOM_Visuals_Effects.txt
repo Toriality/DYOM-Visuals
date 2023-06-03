@@ -44,11 +44,7 @@ jump @DYOM_VISUALS_EFFECTS_END
     
     cleo_call @CONFIG_READ_PARAM args 4 0@ 0.0 true 'forceAiming' result 1@
     0092: 1@ = float 1@ to_integer
-    0085: forceAiming = 1@
-    
-    cleo_call @CONFIG_READ_PARAM args 4 0@ 0.0 true 'darkness' result 1@
-    0092: 1@ = float 1@ to_integer
-    0924: enable_screen_darkness 1@ with_value -1            
+    0085: forceAiming = 1@        
     
     cleo_call @CONFIG_READ_PARAM args 4 0@ -1.0 false 'fadeout' result 1@
     if
@@ -66,7 +62,7 @@ jump @DYOM_VISUALS_EFFECTS_END
         016A: fade 1 time 1@
     end
     
-    cleo_call @CONFIG_READ_PARAM args 4 0@ 0.0 true 'shake' result 1@
+    cleo_call @CONFIG_READ_PARAM args 4 0@ 0.0 false 'shake' result 1@
     0092: 1@ = float 1@ to_integer
     0003: shake_camera 1@
     

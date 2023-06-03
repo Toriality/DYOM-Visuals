@@ -39,6 +39,7 @@ const
     forceAiming = 13@
     previewMode = 14@
     lastSelected = 15@
+    shaderDone = 16@ // done or still need peer frame updates
     
     previewMode_off = 0
     previewMode_editor = 1
@@ -69,7 +70,7 @@ script_name "DVISUALS"
     lastSelected = -1
     
     SHADERS_INIT()
-    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
 return                      
  
      
@@ -80,7 +81,7 @@ return
 
 :DYOM_MISSION_ENDED
     previewMode = previewMode_off
-    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
     
     0@ = -2 // restore defaults
     EFFECTS_CONFIG_UPDATE_PARAMS()
@@ -91,7 +92,7 @@ return
     TimerB = 0 // objective time
     
     0@ += 1 // 1-based objective index
-    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ // current objective
+    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ result shaderDone // current objective
     
     // current objective in 0@
     EFFECTS_CONFIG_UPDATE_PARAMS()
@@ -111,6 +112,14 @@ return
 
 
 :DYOM_MISSION_RUN
+    if
+        shaderDone == false // still needs updates
+    then
+        008B: 0@ = dyom_objective_index
+        0@ += 1 // 1-based objective index
+        cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ result shaderDone // current objective
+    end
+
     EFFECTS_PROCESS()
 return
 
@@ -131,7 +140,7 @@ return
                     wait 0
                 end
                 
-                return
+                previewMode -= 1 // keep current mode
             end
         
             while is_key_pressed 0x7B // wait for key release
@@ -149,7 +158,7 @@ return
                 previewMode == previewmode_off
             then
                 0ACE: show_formatted_text_box "Effects: ~r~~h~OFF~s~"
-                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // set default parameters
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
             end
             
             if
@@ -162,10 +171,10 @@ return
                     does_file_exist "cleo/dyom_shaders/editor.ini"
                 then
                     0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
-                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -1 // editor.ini
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -1 result shaderDone // editor.ini
                 else
                     0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
-                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // restore defaults    
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults    
                 end
             end
             
@@ -187,11 +196,11 @@ return
                 cleo_call @CONFIG_EXISTS args 0
             then
                 0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 lastSelected
-                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected result shaderDone
             else
                 cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 3@
                 0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ Visuals file for this mission not found!~n~Please create %s" time 10000 1@v
-                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 // restore defaults  
+                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults  
             end
         end
     end
