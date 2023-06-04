@@ -46,7 +46,6 @@ const
     previewMode_off = 0
     previewMode_editor = 1
     previewMode_objective = 2
-    previewMode_max = 2
 end
 
 var
@@ -129,130 +128,108 @@ return
 return
 
 
-:SHADERS_EDITOR_UPDATE
+:SHADERS_EDITOR_UPDATE    
     if
         $ONMISSION == 0 // editor mode
     then
+        0@ = false // reload ini file
+    
         // FPS Count to check whether game was paused/alt-tabbed or not
-        0A8D: 0@ = read_memory 0xb7cb4c size 4 virtual_protect 0
-        
+        0A8D: 1@ = read_memory 0xb7cb4c size 4 virtual_protect 0
         if
-            0@ > nextFrameCount
+            1@ > nextFrameCount
         then
-            wasGamePaused = true
-        else
-            wasGamePaused = false    
+            0@ = true // game was paused, reload ini file
         end 
-        nextFrameCount = 0@
+        nextFrameCount = 1@
         nextFrameCount += 1
     
-        if or
+        // handle preview mode keyboard key
+        
+        if
             is_key_pressed 0x7B // F12
-            wasGamePaused == true
+            //0736: is_keyboard_key_just_pressed 0x7B // F12
         then
             if
                 is_key_pressed 0x11 // CTRL
             then
                 SHADERS_INIT() // rebuild shaders
+            else
+                previewMode += 1
                 
-                while is_key_pressed 0x7B // wait for key release
-                    wait 0
+                if
+                    previewMode == previewmode_editor
+                then
+                    0ACE: show_formatted_text_box "Effects: ~y~~h~Editor~s~"
+                else
+                    if
+                        previewMode == previewmode_objective
+                    then
+                        0ACE: show_formatted_text_box "Effects: ~g~~h~Objective~s~"
+                    else
+                        previewMode = previewMode_off
+                        0ACE: show_formatted_text_box "Effects: ~r~~h~OFF~s~"    
+                    end
                 end
-                
-                previewMode -= 1 // keep current mode
             end
-        
-            while is_key_pressed 0x7B // wait for key release
+            
+            // wait for mode key released
+            while is_key_pressed 0x7B // F12
                 wait 0
             end
             
+            0@ = true // reload ini file
+        end
+        
+        // handle editor selected objective changes
+        if and
+            previewMode == previewmode_objective
+            87D6: lastSelected <> $15617
+        then
+            008B: lastSelected = $15617
+            0@ = true // reload ini file
+        end
+        
+        // reload config from .ini file
+        if
+            0@ == true // update requested
+        then
             if
-                wasGamePaused == false
+                previewMode == previewmode_off    
             then
-                previewMode += 1
-            end
-            
-            if
-                previewMode > previewMode_max
-            then
-                previewMode = previewmode_off    
-            end
-            
-            if and
-                previewMode == previewmode_off
-                wasGamePaused == false
-            then
-                0ACE: show_formatted_text_box "Effects: ~r~~h~OFF~s~"
                 cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
+                //0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Effects disabled" time 2000
             end
             
             if
-                previewMode == previewmode_editor
+                previewMode == previewmode_editor // use editor.ini
             then
-                if
-                    wasGamePaused == false
-                then
-                    0ACE: show_formatted_text_box "Effects: ~y~~h~Editor~s~"
-                end
-                
                 set_current_directory 0 // game root
-                
                 if
                     does_file_exist "cleo/dyom_shaders/editor.ini"
                 then
-                    if
-                        wasGamePaused == false
-                    then
-                        0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
-                    end
-                    
+                    0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 2000
                     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -1 result shaderDone // editor.ini
                 else
-                    if
-                        wasGamePaused == false
-                    then
-                        0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
-                    end
-                    
+                    0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
                     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults    
                 end
             end
             
-            if and
-                previewMode == previewmode_objective
-                wasGamePaused == false
-            then
-                0ACE: show_formatted_text_box "Effects: ~g~~h~Objective~s~"
-                lastSelected = -1 // trigger update
-            end
-        end
-        
-        if and
-            previewMode == previewmode_objective
-            87D6: lastSelected <> $15617 // editor selected objective changed
-        then
-            008B: lastSelected = $15617
-            
             if
-                cleo_call @CONFIG_EXISTS args 0
+                previewMode == previewmode_objective // use mission's visuals.ini
             then
                 if
-                    wasGamePaused == false
+                    cleo_call @CONFIG_EXISTS args 0
                 then
                     0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 lastSelected
-                end
-                
-                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected result shaderDone
-            else      
-                if
-                    wasGamePaused == false
-                then
-                    cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 3@   
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected result shaderDone
+                else      
+                    cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 4@   
                     0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ Visuals file for this mission not found!~n~Please create %s" time 10000 1@v            
+                    cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults  
                 end
-                
-                cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults  
-            end
+            end  
         end
     end
 return
