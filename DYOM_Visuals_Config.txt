@@ -13,7 +13,7 @@ jump @DYOM_VISUALS_CONFIG_END // do not execute any code from this file yet
     // set filename in the path
     0AC7: 4@ = var 0@ offset
     4@ += 9 // skip to filename start
-    string_format 4@ = string_format "effect" // copy string
+    string_format 4@ = string_format "fx.ini" // copy string
             
 cleo_return 4 0@ 1@ 2@ 3@
 
