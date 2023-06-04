@@ -6,12 +6,13 @@ _Enhance your missions with special effects and shaders_
 
 1. [Installation](#installation)
 2. [Documentation](#documentation)
-   1. [Visuals File](#visuals-file)
-   2. [Nomenclatures](#nomenclatures)
+   1. [Visuals File](#visualsini-file)
+   2. [Visuals Categories](#visuals-categories)
    3. [List of Effects](#list-of-effects)
    4. [List of Shaders](#list-of-shaders)
-   5. [DYOM_Shaders Folder](#dyomshaders-folder)
-   6. [Keyboard Shortcuts](#keyboard-shortcuts)
+   5. [Transitions](#transitions)
+   6. [DYOM_Shaders Folder](#dyomshaders-folder)
+   7. [Keyboard Shortcuts](#keyboard-shortcuts)
 
 ## Installation
 
@@ -23,6 +24,7 @@ A few notes to take
 
 - This mod only works with the latest version of DYOM, which currently is 8.1
 - This mod does not breaks compatibility of your missions. The end user doesn't need to have this mod in order to be able to play your missions
+- It is recommended to have [Essentials pack](https://www.mixmods.com.br/2019/06/sa-essentials-pack/) for a more productive workspace while fine-tuning and testing shaders
 
 ## Documentation
 
@@ -60,8 +62,6 @@ All the visuals in the modification are divided into three distinct categories:
 - **Effects:** Features and visuals existing in the original game that can affect the screen and gameplay, such as activating the HUD, FOV, and forcing camera styles.
 
 - **Shaders:** Special visual FX developed with HLSL (DirectX) that modify the game screen by changing colors, adding overlays, transitions, and more.
-
-- **Transitions:** These are shaders that move from point A to point B in a determined duration.
 
 ### List of Effects
 
@@ -112,12 +112,6 @@ All the visuals in the modification are divided into three distinct categories:
       <td>Fade out for X milliseconds</td>
     </tr>
     <tr>
-      <td>Darkness</td>
-      <td>0 or 1</td>
-      <td>0</td>
-      <td>Applies the darkness effect used in the End Of The Line mission.</td>
-    </tr>
-    <tr>
       <td>Drunkenness</td>
       <td>Any integer</td>
       <td>0</td>
@@ -148,29 +142,29 @@ All the visuals in the modification are divided into three distinct categories:
       <td>Force cinematic camera on vehicles.</td>
     </tr>
     <tr>
-       <td>FOV</td>
-       <td>Any float</td>
-       <td>70.0</td>
-       <td>Adjust Field Of View</td>
-     </tr>
+      <td>FOV</td>
+      <td>Any float</td>
+      <td>70.0</td>
+      <td>Adjust Field Of View</td>
+    </tr>
     <tr>
-       <td>Speed</td>
-       <td>Any float</td>
-       <td>1.0</td>
-       <td>Adjust game speed</td>
-     </tr>
+      <td>Speed</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Adjust game speed</td>
+    </tr>
     <tr>
-       <td>ThermalVision</td>
-       <td>0 or 1</td>
-       <td>0</td>
-       <td>Toggles thermal vision</td>
-     </tr>
-     <tr>
-        <td>NightVision</td>
-        <td>0 or 1</td>
-        <td>0</td>
-        <td>Toggles night vision</td>
-     </tr>
+      <td>ThermalVision</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Toggles thermal vision</td>
+    </tr>
+    <tr>
+      <td>NightVision</td>
+      <td>0 or 1</td>
+      <td>0</td>
+      <td>Toggles night vision</td>
+    </tr>
   </tbody>
 </table>
 
@@ -361,12 +355,6 @@ All the visuals in the modification are divided into three distinct categories:
       <td>Artistically disables all the colors except one. Use 1 for keep red color, 2 for green color, 3 for blue color, 0 to disable</td>
     </tr>
     <tr>
-      <td>Invert</td>
-      <td>0 or 1</td>
-      <td>0</td>
-      <td>Invert colors of the screen</td>
-    </tr>
-    <tr>
       <td>Interlaces</td>
       <td>Any integer</td>
       <td>0</td>
@@ -375,32 +363,56 @@ All the visuals in the modification are divided into three distinct categories:
     <tr>
       <td>VignetteRound</td>
       <td>Any float</td>
-      <td>1.0</td>
+      <td>0.5</td>
       <td>Set vignette shape to be square, circle or spindle-like</td>
     </tr>
     <tr>
       <td>VignetteStart</td>
       <td>Any float</td>
-      <td>1.0</td>
+      <td>2.0</td>
       <td>Distance from center of the screen to the vignette border. 1.0 makes it the same as screen size</td>
     </tr>
     <tr>
       <td>VignetteWidth</td>
       <td>Any float</td>
-      <td>0.0</td>
+      <td>3.0</td>
       <td>Width of soft edge gradient. 0.0 for hard edge</td>
     </tr>
     <tr>
       <td>VignetteAspect</td>
       <td>Any float</td>
-      <td>0.0</td>
+      <td>1.0</td>
       <td>Aspect ratio of the vignette. 1.0 for perfect square/circle</td>
     </tr>
     <tr>
-      <td>FogSize</td>
+      <td>VignetteRed</td>
       <td>Any float</td>
       <td>0.0</td>
-      <td>Size of fog</td>
+      <td>Amount of red color to be applied into the vignette</td>
+    </tr>
+    <tr>
+      <td>VignetteGreen</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Amount of green color to be applied into the vignette</td>
+    </tr>
+    <tr>
+      <td>VignetteBlue</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Amount of blue color to be applied into the vignette</td>
+    </tr>
+    <tr>
+      <td>VignetteAlpha</td>
+      <td>Any float</td>
+      <td>1.0</td>
+      <td>Transparency value to be applied into the vignette</td>
+    </tr>
+    <tr>
+      <td>VignetteMixing</td>
+      <td>0, 1, 2 or 3</td>
+      <td>0</td>
+      <td>Mixing mode. 0: Normal; 1: Multiply; 2: Inverted Normal; 3: Inverted Multiply</td>
     </tr>
     <tr>
       <td>FogRed</td>
@@ -408,75 +420,73 @@ All the visuals in the modification are divided into three distinct categories:
       <td>0.0</td>
       <td>Red color for fog</td>
     </tr>
-     <tr>
+    <tr>
       <td>FogGreen</td>
       <td>Any float</td>
       <td>0.0</td>
       <td>Green color for fog</td>
     </tr>
-     <tr>
+    <tr>
       <td>FogBlue</td>
       <td>Any float</td>
       <td>0.0</td>
       <td>Blue color for fog</td>
     </tr>
     <tr>
+      <td>FogAlpha</td>
+      <td>Any float</td>
+      <td>0.0</td>
+      <td>Transparency value for fog</td>
+    </tr>
+    <tr>
       <td>FogStart</td>
       <td>Any float</td>
-      <td>0.1</td>
-      <td>Start range of fog</td>
+      <td>0.0</td>
+      <td>Start of fog in meters</td>
     </tr>
-   <tr>
-      <td>FogEnd</td>
+    <tr>
+      <td>FogEnd</td> 
       <td>Any float</td>
-      <td>0.6</td>
-      <td>End range of fog</td>
+      <td>0.0</td>
+      <td>End of fog in meters</td>
     </tr>
-        <tr>
+    <tr>
       <td>Desolate</td>
       <td>Any float</td>
       <td>0.0</td>
-      <td>Artistical effect to make all the player's surrouding gray-scale except things near him</td>
+      <td>Artistically make all screen gray scale except things near the given depth. 0 to disable</td>
     </tr>
   </tbody>
 </table>
 
-### List of Transitions
+### Transitions
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Values</th>
-      <th>Default</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>FromGray / ToGray</td>
-      <td>Any float</td>
-      <td>0.0</td>
-      <td>Gray scale transition</td>
-    </tr>
-  </tbody>
-</table>
+The `transition` property is a special configuration you can include in your `visuals.ini` file attached to any objective to transition from previous shader values to new values. The accepted values for this property is any float value (x.y) where `x` represents seconds and `y` milliseconds.
+
+For example, if you want to transition from gray scale to normal color within 5.0 seconds, you can have something like that in your `visuals.ini`file:
+
+```ini
+[OBJECTIVE_1]
+saturation=0.0
+
+[OBJECTIVE_2]
+saturation=1.0
+transition=5.0
+```
+
+Most of the available effects are compatible with transitions, feel free to make many creative transitions for your missions.
 
 ### DYOM_Shaders Folder
 
 This folder contains many of the essential settings and files for DYOM Visuals properly function. Let's take a look at each of the sub-folders and files inside:
 
-- `Editor.ini`
+- `editor.ini`
 
-  This file contains two INI sections for you to customize as you wish.
+  This file contains the following sections for you to preview and customize shaders:
 
   - `[EDITOR_SHADERS]`
 
-    Here you can input any valid shader key-value line. It wil be displayed in-game when you are at editor mode. Use F12 (Reload key) to reload shaders and see the modifications you've made
-
-  - `[EDITOR_SHORTCUTS]`
-
-    Here you will be able to customize the keyboard shortcuts of the add-on with any Virtual Keys you want to assign for Reload Key and Preview Mode key.
+    Here you can input any valid shader property-value line. It wil be displayed in-game when you are at editor mode. Use F12 (Reload key) to reload shaders and see the modifications you've made
 
 - `Shaders` folder
 
@@ -492,24 +502,13 @@ This folder contains many of the essential settings and files for DYOM Visuals p
 
 ### Keyboard Shortcuts
 
-The add-on provide useful shortcuts that you can customize on editor.ini file. They are only used in editor mode.
+- F12
 
-<table>
-  <thead>
-    <th>Name</th>
-    <th>Default key</th>
-    <th>Description</th>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Reload Key</td>
-      <td>F12</td>
-      <td>Reloads the shaders present on editor.ini file (or visuals.ini of the loaded mission if preview mode is active)
-    </tr>
-    <tr>
-      <td>Preview Mode</td>
-      <td>F11</td>
-      <td>Switches Preview Mode ON/OFF. When it's OFF, you will see editor.ini's shaders. When it's ON, you will see the loaded mission's visuals.ini's shaders, and it will automatically update when currently selected objective changes.</td>
-    </tr>
-  </tbody>
-</table>
+  - Switches between different Preview Modes
+  - `OFF`: won't display any shaders
+  - `Editor`: will display `editor.ini` shaders and update every time the file changes.
+  - `Objective`: will display `visuals.ini` shaders relative to the selected objective and update every objective selection change or file change.
+
+- CTRL + F12
+  - Reset Shaders
+  - Re-initialize the shader handle and force all values to be reset to default.
