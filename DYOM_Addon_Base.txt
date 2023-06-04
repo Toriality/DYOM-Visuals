@@ -15,9 +15,8 @@ end
 wait 1000 ms // give other things time to start
 
 if
-    CHECK_FOR_DYOM() 
+    not cleo_call @CHECK_FOR_DYOM args 0 
 then
-else
     0A93: terminate_this_custom_script // not DYOM game mode
 end
 

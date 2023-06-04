@@ -419,14 +419,17 @@ return
     end                
 return
 
-const 
-	i0 = 0@
-	//f0 = 0@
-end
-
 var
-	i0 : int
-	//f0 : float
+	0@ : int
+	1@ : int
+	2@ : int
+	3@ : int
+	4@ : int
+	5@ : int
+	6@ : int
+	7@ : int
+	8@ : int
+	9@ : int
 end
 
 // clear mission data
@@ -455,40 +458,27 @@ return
 
 
 // check if is the DYOM current game script
-// return @0 - true or false
+// fubnction sets condition result
 :CHECK_FOR_DYOM
-    if CHECK_FOR_DYOM_81()
+    // check if there is DYOM's weapon models mapping in global variables
+    if and
+        $15810 == #BRASSKNUCKLE
+        $15811 == #GOLFCLUB
+        $15812 == #NITESTICK
+        $15813 == #KNIFECUR
+        $15814 == #BAT
+        $15815 == #SHOVEL
+        $15816 == #POOLCUE
+        $15817 == #KATANA
     then
-        return 1 true
+        0485: set_condition_true
+        cleo_return 0  
     end
     
-    if CHECK_FOR_DYOM_RED()
-    then
-        return 1 true
-    end
-            
-    //print_formatted_now "DYOM not detected. Memory markers 0x%x 0x%x" time 2000 $9877 $9888 // DEBUG  
-return 1 false
-
-
-:CHECK_FOR_DYOM_81
-    if and // DYOM 8.1 and other compatible
-        $9877 == 0xA49960
-        $9888 == 0xA5C2D2
-    then
-        return 1 true
-    end
-return 1 false
-
-
-:CHECK_FOR_DYOM_RED
-    if and // DYOM REd
-        $9877 == 0xA4995B
-        $9888 == 0xA5C2CD
-    then
-        return 1 true
-    end
-return 1 false
+    018C: play_sound 1145 at 0.0 0.0 0.0 
+    print_formatted_now "DYOM not detected." time 2000
+    059A: set_condition_false
+cleo_return 0
 
 
 :DYOM_GLOBALS_END
