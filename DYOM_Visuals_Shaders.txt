@@ -125,6 +125,7 @@ cleo_return 0
     cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 0.0 2@ 'quantize'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 0.0 2@ 'oneColor'
     cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 0.0 2@ 'interlaces'
+    cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 0.0 2@ 'desolate'
         
     cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 0.5 2@ 'vignetteRound' 
     cleo_call @SHADERS_CONFIG_READ_PARAM args 5 0@ 1@ 2.0 2@ 'vignetteStart'
