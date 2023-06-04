@@ -40,6 +40,8 @@ const
     previewMode = 14@
     lastSelected = 15@
     shaderDone = 16@ // done or still need peer frame updates
+    nextFrameCount = 17@
+    wasGamePaused = 18@
     
     previewMode_off = 0
     previewMode_editor = 1
@@ -54,6 +56,8 @@ var
     forceBumper: int
     previewMode: int
     lastSelected: int
+    nextFrameCount: int
+    wasGamePaused: int
 end
 
 script_name "DVISUALS"
@@ -68,6 +72,7 @@ script_name "DVISUALS"
 :DYOM_INIT
     previewMode = previewMode_off
     lastSelected = -1
+    wasGamePaused = false
     
     SHADERS_INIT()
     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
@@ -88,7 +93,7 @@ return
 return
 
 
-:DYOM_OBJECTIVE_STARTED
+:DYOM_OBJECTIVE_STARTED 
     TimerB = 0 // objective time
     
     0@ += 1 // 1-based objective index
@@ -104,7 +109,7 @@ return
 return
 
 
-:DYOM_RUN // editor and mission
+:DYOM_RUN // editor and mission    
     SHADERS_EDITOR_UPDATE() // handle keys etc.
     cleo_call @SHADERS_CONSTANTS_UPDATE args 1 hShader
     cleo_call @SHADERS_DRAW args 1 hShader
@@ -119,7 +124,7 @@ return
         0@ += 1 // 1-based objective index
         cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader 0@ result shaderDone // current objective
     end
-
+      
     EFFECTS_PROCESS()
 return
 
@@ -128,8 +133,22 @@ return
     if
         $ONMISSION == 0 // editor mode
     then
+        // FPS Count to check whether game was paused/alt-tabbed or not
+        0A8D: 0@ = read_memory 0xb7cb4c size 4 virtual_protect 0
+        
         if
+            0@ > nextFrameCount
+        then
+            wasGamePaused = true
+        else
+            wasGamePaused = false    
+        end 
+        nextFrameCount = 0@
+        nextFrameCount += 1
+    
+        if or
             is_key_pressed 0x7B // F12
+            wasGamePaused == true
         then
             if
                 is_key_pressed 0x11 // CTRL
@@ -147,15 +166,21 @@ return
                 wait 0
             end
             
-            previewMode += 1
+            if
+                wasGamePaused == false
+            then
+                previewMode += 1
+            end
+            
             if
                 previewMode > previewMode_max
             then
                 previewMode = previewmode_off    
             end
             
-            if
+            if and
                 previewMode == previewmode_off
+                wasGamePaused == false
             then
                 0ACE: show_formatted_text_box "Effects: ~r~~h~OFF~s~"
                 cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // set default parameters
@@ -164,22 +189,38 @@ return
             if
                 previewMode == previewmode_editor
             then
-                0ACE: show_formatted_text_box "Effects: ~y~~h~Editor~s~"
-            
+                if
+                    wasGamePaused == false
+                then
+                    0ACE: show_formatted_text_box "Effects: ~y~~h~Editor~s~"
+                end
+                
                 set_current_directory 0 // game root
+                
                 if
                     does_file_exist "cleo/dyom_shaders/editor.ini"
                 then
-                    0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
+                    if
+                        wasGamePaused == false
+                    then
+                        0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders from editor.ini" time 3000
+                    end
+                    
                     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -1 result shaderDone // editor.ini
                 else
-                    0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
+                    if
+                        wasGamePaused == false
+                    then
+                        0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ File cleo\dyom_shaders\editor.ini not found!" time 10000
+                    end
+                    
                     cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults    
                 end
             end
             
-            if
+            if and
                 previewMode == previewmode_objective
+                wasGamePaused == false
             then
                 0ACE: show_formatted_text_box "Effects: ~g~~h~Objective~s~"
                 lastSelected = -1 // trigger update
@@ -195,11 +236,21 @@ return
             if
                 cleo_call @CONFIG_EXISTS args 0
             then
-                0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 lastSelected
+                if
+                    wasGamePaused == false
+                then
+                    0AD1: show_formatted_text_highpriority "~g~~h~OK:~s~ Loaded shaders for Objective %d" time 3000 lastSelected
+                end
+                
                 cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader lastSelected result shaderDone
-            else
-                cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 3@
-                0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ Visuals file for this mission not found!~n~Please create %s" time 10000 1@v
+            else      
+                if
+                    wasGamePaused == false
+                then
+                    cleo_call @CONFIG_GET_FILEPATH args 0 result 1@ 2@ 3@ 3@   
+                    0AD1: show_formatted_text_highpriority "~r~~h~ERROR:~s~ Visuals file for this mission not found!~n~Please create %s" time 10000 1@v            
+                end
+                
                 cleo_call @SHADERS_CONFIG_UPDATE_PARAMS 2 hShader -2 result shaderDone // restore defaults  
             end
         end
