@@ -74,8 +74,6 @@ float4 PS_main(float2 uv : TEXCOORD): COLOR
     color = PS_Quantize(color); 
     color = PS_OneColor(color);
     color.rgb = PS_Interlaces(color, uv);
-    //color = PS_fromGray(color);
-    //color = PS_toGray(color);
     
     // Depth shaders
     color = PS_Fog(color, depth);
